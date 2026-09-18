@@ -1,0 +1,46 @@
+<div class="page">
+  <div class="page-header">
+    <h1>Communes / Villes</h1>
+    <a routerLink="/territorial/communes-villes/nouveau" class="bouton-primaire">+ Nouvelle commune/ville</a>
+  </div>
+
+  @if (messageErreur()) {
+    <p class="message-erreur">{{ messageErreur() }}</p>
+  }
+
+  @if (enChargement()) {
+    <p>Chargement...</p>
+  } @else if (communesVilles().length === 0) {
+    <p>Aucune commune/ville enregistree pour le moment.</p>
+  } @else {
+    <table class="tableau">
+      <thead>
+        <tr>
+          <th>Code</th>
+          <th>Nom</th>
+          <th>Type</th>
+          <th>Departement</th>
+          <th>Statut</th>
+          <th>Arrondissements</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (item of communesVilles(); track item.id) {
+          <tr>
+            <td>{{ item.code }}</td>
+            <td>{{ item.nom }}</td>
+            <td>{{ item.type }}</td>
+            <td>{{ item.departementNom }}</td>
+            <td>{{ item.statut }}</td>
+            <td>{{ item.nombreArrondissements }}</td>
+            <td class="actions">
+              <a [routerLink]="['/territorial/communes-villes', item.id, 'modifier']">Modifier</a>
+              <button type="button" (click)="supprimer(item)">Supprimer</button>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  }
+</div>

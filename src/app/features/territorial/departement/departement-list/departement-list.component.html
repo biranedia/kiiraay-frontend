@@ -1,0 +1,44 @@
+<div class="page">
+  <div class="page-header">
+    <h1>Departements</h1>
+    <a routerLink="/territorial/departements/nouveau" class="bouton-primaire">+ Nouveau departement</a>
+  </div>
+
+  @if (messageErreur()) {
+    <p class="message-erreur">{{ messageErreur() }}</p>
+  }
+
+  @if (enChargement()) {
+    <p>Chargement...</p>
+  } @else if (departements().length === 0) {
+    <p>Aucun departement enregistre pour le moment.</p>
+  } @else {
+    <table class="tableau">
+      <thead>
+        <tr>
+          <th>Code</th>
+          <th>Nom</th>
+          <th>Region</th>
+          <th>Responsable</th>
+          <th>Communes</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (departement of departements(); track departement.id) {
+          <tr>
+            <td>{{ departement.code }}</td>
+            <td>{{ departement.nom }}</td>
+            <td>{{ departement.regionNom }}</td>
+            <td>{{ departement.responsableEventuel || '-' }}</td>
+            <td>{{ departement.nombreCommunes }}</td>
+            <td class="actions">
+              <a [routerLink]="['/territorial/departements', departement.id, 'modifier']">Modifier</a>
+              <button type="button" (click)="supprimer(departement)">Supprimer</button>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  }
+</div>

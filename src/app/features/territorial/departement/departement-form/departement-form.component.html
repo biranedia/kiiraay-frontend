@@ -1,0 +1,33 @@
+<div class="page">
+  <h1>{{ modeEdition ? 'Modifier le departement' : 'Nouveau departement' }}</h1>
+
+  @if (messageErreur()) {
+    <p class="message-erreur">{{ messageErreur() }}</p>
+  }
+
+  <form [formGroup]="formulaire" (ngSubmit)="enregistrer()" class="formulaire">
+    <label for="nom">Nom</label>
+    <input id="nom" type="text" formControlName="nom" placeholder="Ex : Dakar" />
+
+    <label for="code">Code</label>
+    <input id="code" type="text" formControlName="code" placeholder="Ex : DK-01" />
+
+    <label for="responsableEventuel">Responsable (optionnel)</label>
+    <input id="responsableEventuel" type="text" formControlName="responsableEventuel" />
+
+    <label for="regionId">Region</label>
+    <select id="regionId" formControlName="regionId">
+      <option [ngValue]="null" disabled>Choisir une region</option>
+      @for (region of regions(); track region.id) {
+        <option [ngValue]="region.id">{{ region.nom }}</option>
+      }
+    </select>
+
+    <div class="boutons">
+      <button type="button" class="bouton-secondaire" (click)="annuler()">Annuler</button>
+      <button type="submit" class="bouton-primaire" [disabled]="enCours()">
+        {{ enCours() ? 'Enregistrement...' : 'Enregistrer' }}
+      </button>
+    </div>
+  </form>
+</div>

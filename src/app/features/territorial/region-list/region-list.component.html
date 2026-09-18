@@ -1,0 +1,42 @@
+<div class="page">
+  <div class="page-header">
+    <h1>Regions</h1>
+    <a routerLink="/territorial/regions/nouveau" class="bouton-primaire">+ Nouvelle region</a>
+  </div>
+
+  @if (messageErreur()) {
+    <p class="message-erreur">{{ messageErreur() }}</p>
+  }
+
+  @if (enChargement()) {
+    <p>Chargement...</p>
+  } @else if (regions().length === 0) {
+    <p>Aucune region enregistree pour le moment.</p>
+  } @else {
+    <table class="tableau">
+      <thead>
+        <tr>
+          <th>Code</th>
+          <th>Nom</th>
+          <th>Statut</th>
+          <th>Departements</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (region of regions(); track region.id) {
+          <tr>
+            <td>{{ region.code }}</td>
+            <td>{{ region.nom }}</td>
+            <td>{{ region.statut }}</td>
+            <td>{{ region.nombreDepartements }}</td>
+            <td class="actions">
+              <a [routerLink]="['/territorial/regions', region.id, 'modifier']">Modifier</a>
+              <button type="button" (click)="supprimer(region)">Supprimer</button>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  }
+</div>

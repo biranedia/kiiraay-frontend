@@ -1,0 +1,28 @@
+<div class="page">
+  <h1>{{ modeEdition ? 'Modifier la region' : 'Nouvelle region' }}</h1>
+
+  @if (messageErreur()) {
+    <p class="message-erreur">{{ messageErreur() }}</p>
+  }
+
+  <form [formGroup]="formulaire" (ngSubmit)="enregistrer()" class="formulaire">
+    <label for="nom">Nom</label>
+    <input id="nom" type="text" formControlName="nom" placeholder="Ex : Dakar" />
+    @if (formulaire.controls.nom.invalid && formulaire.controls.nom.touched) {
+      <p class="champ-erreur">Le nom doit contenir au moins 2 caracteres.</p>
+    }
+
+    <label for="code">Code</label>
+    <input id="code" type="text" formControlName="code" placeholder="Ex : DK" />
+    @if (formulaire.controls.code.invalid && formulaire.controls.code.touched) {
+      <p class="champ-erreur">Le code doit contenir au moins 2 caracteres.</p>
+    }
+
+    <div class="boutons">
+      <button type="button" class="bouton-secondaire" (click)="annuler()">Annuler</button>
+      <button type="submit" class="bouton-primaire" [disabled]="enCours()">
+        {{ enCours() ? 'Enregistrement...' : 'Enregistrer' }}
+      </button>
+    </div>
+  </form>
+</div>
