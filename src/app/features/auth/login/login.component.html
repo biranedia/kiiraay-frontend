@@ -1,0 +1,20 @@
+<div class="page-connexion">
+  <form class="carte-connexion" [formGroup]="formulaire" (ngSubmit)="soumettre()">
+    <h1>KIIRAAY</h1>
+    <p class="sous-titre">Base de donnees departementale</p>
+
+    <label for="login">Identifiant</label>
+    <input id="login" type="text" formControlName="login" autocomplete="username" />
+
+    <label for="motDePasse">Mot de passe</label>
+    <input id="motDePasse" type="password" formControlName="motDePasse" autocomplete="current-password" />
+
+    @if (messageErreur()) {
+      <p class="erreur">{{ messageErreur() }}</p>
+    }
+
+    <button type="submit" [disabled]="enCours()">
+      {{ enCours() ? 'Connexion...' : 'Se connecter' }}
+    </button>
+  </form>
+</div>
