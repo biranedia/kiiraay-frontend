@@ -1,0 +1,55 @@
+<div class="page">
+  <div class="page-header">
+    <h1>Cellules</h1>
+    <a routerLink="/cellule/cellules/nouveau" class="bouton-primaire">+ Nouvelle cellule</a>
+  </div>
+
+  @if (messageErreur()) {
+    <p class="message-erreur">{{ messageErreur() }}</p>
+  }
+
+  @if (enChargement()) {
+    <p>Chargement...</p>
+  } @else if (cellules().length === 0) {
+    <p>Aucune cellule enregistree pour le moment.</p>
+  } @else {
+    <table class="tableau">
+      <thead>
+        <tr>
+          <th>Code</th>
+          <th>Nom</th>
+          <th>Type</th>
+          <th>Localite</th>
+          <th>Statut</th>
+          <th>Bureau</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (cellule of cellules(); track cellule.id) {
+          <tr>
+            <td>{{ cellule.code }}</td>
+            <td>{{ cellule.nom }}</td>
+            <td>{{ cellule.type }}</td>
+            <td>{{ cellule.localiteNom }}</td>
+            <td><span class="badge" [class]="'badge-' + cellule.statut.toLowerCase()">{{ cellule.statut }}</span></td>
+            <td>{{ cellule.bureauConstitue ? 'Constitue' : 'Non constitue' }}</td>
+            <td class="actions">
+              @if (peutModifier(cellule)) {
+                <a [routerLink]="['/cellule/cellules', cellule.id, 'modifier']">Modifier</a>
+              }
+              @if (peutSoumettre(cellule)) {
+                <button type="button" (click)="soumettre(cellule)" [disabled]="enAction() === cellule.id">Soumettre</button>
+              }
+              @if (peutValiderOuRejeter(cellule)) {
+                <button type="button" (click)="valider(cellule)" [disabled]="enAction() === cellule.id">Valider</button>
+                <button type="button" class="lien-danger" (click)="rejeter(cellule)" [disabled]="enAction() === cellule.id">Rejeter</button>
+              }
+              <button type="button" class="lien-danger" (click)="supprimer(cellule)">Supprimer</button>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  }
+</div>

@@ -1,0 +1,48 @@
+<div class="page">
+  <h1>{{ modeEdition ? 'Modifier la cellule' : 'Nouvelle cellule' }}</h1>
+
+  @if (messageErreur()) {
+    <p class="message-erreur">{{ messageErreur() }}</p>
+  }
+
+  <form [formGroup]="formulaire" (ngSubmit)="enregistrer()" class="formulaire">
+    <label for="code">Code</label>
+    <input id="code" type="text" formControlName="code" placeholder="Ex : CEL-001" />
+
+    <label for="nom">Nom</label>
+    <input id="nom" type="text" formControlName="nom" placeholder="Ex : Cellule Cite Keur Gorgui" />
+
+    <label for="type">Type</label>
+    <select id="type" formControlName="type">
+      <option value="QUARTIER">Quartier</option>
+      <option value="VILLAGE">Village</option>
+      <option value="DIASPORA">Diaspora</option>
+    </select>
+
+    @if (estDiaspora) {
+      <label for="pays">Pays</label>
+      <input id="pays" type="text" formControlName="pays" placeholder="Ex : France" />
+      @if (formulaire.controls.pays.invalid && formulaire.controls.pays.touched) {
+        <p class="champ-erreur">Le pays est obligatoire pour une cellule diaspora.</p>
+      }
+    }
+
+    <label for="localiteId">Localite</label>
+    <select id="localiteId" formControlName="localiteId">
+      <option [ngValue]="null" disabled>Choisir une localite</option>
+      @for (localite of localites(); track localite.id) {
+        <option [ngValue]="localite.id">{{ localite.nom }}</option>
+      }
+    </select>
+
+    <label for="observations">Observations (optionnel)</label>
+    <textarea id="observations" formControlName="observations" rows="3"></textarea>
+
+    <div class="boutons">
+      <button type="button" class="bouton-secondaire" (click)="annuler()">Annuler</button>
+      <button type="submit" class="bouton-primaire" [disabled]="enCours()">
+        {{ enCours() ? 'Enregistrement...' : 'Enregistrer' }}
+      </button>
+    </div>
+  </form>
+</div>

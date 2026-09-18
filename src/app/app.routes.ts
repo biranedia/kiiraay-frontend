@@ -102,5 +102,23 @@ export const routes: Routes = [
     loadComponent: () =>
       import('./features/territorial/localite/localite-form/localite-form.component').then((m) => m.LocaliteFormComponent)
   },
+  {
+    path: 'cellule/cellules',
+    canActivate: [authGuard],
+    loadComponent: () =>
+      import('./features/cellule/cellule-list/cellule-list.component').then((m) => m.CelluleListComponent)
+  },
+  {
+    path: 'cellule/cellules/nouveau',
+    canActivate: [authGuard],
+    loadComponent: () =>
+      import('./features/cellule/cellule-form/cellule-form.component').then((m) => m.CelluleFormComponent)
+  },
+  {
+    path: 'cellule/cellules/:id/modifier',
+    canActivate: [authGuard],
+    loadComponent: () =>
+      import('./features/cellule/cellule-form/cellule-form.component').then((m) => m.CelluleFormComponent)
+  },
   { path: '**', redirectTo: 'tableau-de-bord' }
 ];

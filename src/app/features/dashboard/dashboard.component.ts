@@ -18,6 +18,7 @@ import { AuthService } from '../../core/services/auth.service';
         <a routerLink="/territorial/communes-villes">Communes / Villes</a>
         <a routerLink="/territorial/arrondissements">Arrondissements</a>
         <a routerLink="/territorial/localites">Localites</a>
+        <a routerLink="/cellule/cellules">Cellules</a>
       </nav>
 
       <button (click)="authService.deconnecter()">Se deconnecter</button>
