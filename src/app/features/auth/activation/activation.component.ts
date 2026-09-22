@@ -29,6 +29,8 @@ export class ActivationComponent implements OnInit {
   readonly enCours = signal(false);
   readonly messageErreur = signal<string | null>(null);
   readonly succes = signal(false);
+  readonly motDePasseVisible = signal(false);
+  readonly confirmationVisible = signal(false);
 
   readonly formulaire = this.fb.nonNullable.group({
     motDePasse: ['', [Validators.required, Validators.minLength(10)]],
@@ -54,6 +56,14 @@ export class ActivationComponent implements OnInit {
         this.lienInvalide.set(err?.error?.message ?? "Ce lien d'activation est invalide ou a expire.");
       }
     });
+  }
+
+  basculerVisibilite(champ: 'motDePasse' | 'confirmation'): void {
+    if (champ === 'motDePasse') {
+      this.motDePasseVisible.update((visible) => !visible);
+    } else {
+      this.confirmationVisible.update((visible) => !visible);
+    }
   }
 
   soumettre(): void {

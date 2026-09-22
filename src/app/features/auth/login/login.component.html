@@ -20,7 +20,26 @@
       <input id="login" type="text" formControlName="login" autocomplete="username" />
 
       <label for="motDePasse">Mot de passe</label>
-      <input id="motDePasse" type="password" formControlName="motDePasse" autocomplete="current-password" />
+      <div class="champ-mdp">
+        <input
+          id="motDePasse"
+          [type]="motDePasseVisible() ? 'text' : 'password'"
+          formControlName="motDePasse"
+          autocomplete="current-password"
+        />
+        <button
+          type="button"
+          class="bouton-oeil"
+          (click)="basculerVisibiliteMotDePasse()"
+          [attr.aria-label]="motDePasseVisible() ? 'Masquer le mot de passe' : 'Afficher le mot de passe'"
+        >
+          @if (motDePasseVisible()) {
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/><line x1="3" y1="21" x2="21" y2="3"/></svg>
+          } @else {
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
+          }
+        </button>
+      </div>
 
       @if (messageErreur()) {
         <p class="erreur">{{ messageErreur() }}</p>

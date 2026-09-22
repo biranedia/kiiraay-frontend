@@ -17,11 +17,16 @@ export class LoginComponent {
 
   readonly enCours = signal(false);
   readonly messageErreur = signal<string | null>(null);
+  readonly motDePasseVisible = signal(false);
 
   readonly formulaire = this.fb.nonNullable.group({
     login: ['', Validators.required],
     motDePasse: ['', Validators.required]
   });
+
+  basculerVisibiliteMotDePasse(): void {
+    this.motDePasseVisible.update((visible) => !visible);
+  }
 
   soumettre(): void {
     if (this.formulaire.invalid) {
