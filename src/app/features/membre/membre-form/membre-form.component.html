@@ -99,6 +99,13 @@
     </div>
   </form>
 
+  @if (!modeEdition) {
+    <p class="note-info-photos">
+      Une fois le membre enregistre, vous pourrez televerser ici meme les photos recto et
+      verso de la CNI (obligatoires pour valider la fiche) ainsi qu'une photo de profil.
+    </p>
+  }
+
   @if (modeEdition) {
     <fieldset class="bloc-cni bloc-photos">
       <legend>Photos de la CNI</legend>
