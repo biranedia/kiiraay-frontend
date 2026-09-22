@@ -1,8 +1,6 @@
 import { Component, inject, signal } from '@angular/core';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Region } from '../../../../core/models/region.model';
-import { RegionService } from '../../services/region.service';
 import { DepartementService } from '../services/departement.service';
 
 @Component({
@@ -14,7 +12,6 @@ import { DepartementService } from '../services/departement.service';
 })
 export class DepartementFormComponent {
   private readonly fb = inject(FormBuilder);
-  private readonly regionService = inject(RegionService);
   private readonly departementService = inject(DepartementService);
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
@@ -23,34 +20,23 @@ export class DepartementFormComponent {
   readonly departementId = this.idParam ? Number(this.idParam) : null;
   readonly modeEdition = this.departementId !== null;
 
-  readonly regions = signal<Region[]>([]);
   readonly enCours = signal(false);
   readonly messageErreur = signal<string | null>(null);
 
   readonly formulaire = this.fb.nonNullable.group({
     nom: ['', [Validators.required, Validators.minLength(2)]],
     code: ['', [Validators.required, Validators.minLength(2)]],
-    responsableEventuel: [''],
-    regionId: [null as number | null, Validators.required]
+    responsableEventuel: ['']
   });
 
   constructor() {
-    this.regionService.listerToutes().subscribe({
-      next: (regions) => this.regions.set(regions),
-      error: () => this.messageErreur.set('Impossible de charger les regions.')
-    });
-
     if (this.modeEdition && this.departementId !== null) {
       this.departementService.trouverParId(this.departementId).subscribe({
         next: (departement) => {
-          this.regionService.listerToutes().subscribe((regions) => {
-            const region = regions.find((r) => r.nom === departement.regionNom);
-            this.formulaire.patchValue({
-              nom: departement.nom,
-              code: departement.code,
-              responsableEventuel: departement.responsableEventuel ?? '',
-              regionId: region ? region.id : null
-            });
+          this.formulaire.patchValue({
+            nom: departement.nom,
+            code: departement.code,
+            responsableEventuel: departement.responsableEventuel ?? ''
           });
         },
         error: () => this.messageErreur.set('Departement introuvable.')
@@ -70,8 +56,7 @@ export class DepartementFormComponent {
     const requete = {
       nom: valeurs.nom,
       code: valeurs.code,
-      responsableEventuel: valeurs.responsableEventuel || undefined,
-      regionId: valeurs.regionId!
+      responsableEventuel: valeurs.responsableEventuel || undefined
     };
 
     const requete$ = this.modeEdition && this.departementId !== null

@@ -18,9 +18,9 @@
           <th>Code</th>
           <th>Nom</th>
           <th>Type</th>
-          <th>Departement</th>
+          <th>Arrondissement</th>
           <th>Statut</th>
-          <th>Arrondissements</th>
+          <th>Localites</th>
           <th></th>
         </tr>
       </thead>
@@ -30,9 +30,9 @@
             <td>{{ item.code }}</td>
             <td>{{ item.nom }}</td>
             <td>{{ item.type }}</td>
-            <td>{{ item.departementNom }}</td>
+            <td>{{ item.arrondissementNom }}</td>
             <td>{{ item.statut }}</td>
-            <td>{{ item.nombreArrondissements }}</td>
+            <td>{{ item.nombreLocalites }}</td>
             <td class="actions">
               @if (peutGerer()) {
                 <a [routerLink]="['/territorial/communes-villes', item.id, 'modifier']">Modifier</a>

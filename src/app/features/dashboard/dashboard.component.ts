@@ -23,10 +23,9 @@ import { AppShellComponent } from '../../core/layout/app-shell/app-shell.compone
       <p class="section-titre">Acces rapide</p>
       <nav class="raccourcis">
         @if (authService.possede('TERRITOIRE_GERER')) {
-          <a routerLink="/territorial/regions">Regions</a>
           <a routerLink="/territorial/departements">Departements</a>
-          <a routerLink="/territorial/communes-villes">Communes / Villes</a>
           <a routerLink="/territorial/arrondissements">Arrondissements</a>
+          <a routerLink="/territorial/communes-villes">Communes / Villes</a>
           <a routerLink="/territorial/localites">Localites</a>
         }
         @if (authService.possede('CELLULE_GERER')) {

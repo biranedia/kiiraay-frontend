@@ -7,9 +7,9 @@
 
   <form [formGroup]="formulaire" (ngSubmit)="enregistrer()" class="formulaire">
     <label for="nom">Nom</label>
-    <input id="nom" type="text" formControlName="nom" placeholder="Ex : Cite Keur Gorgui" />
+    <input id="nom" type="text" formControlName="nom" placeholder="Ex : Ngambe" />
 
-    <label for="type">Type</label>
+    <label for="type">Type de localite</label>
     <select id="type" formControlName="type">
       <option value="QUARTIER">Quartier</option>
       <option value="VILLAGE">Village</option>
@@ -17,15 +17,15 @@
     </select>
 
     <label for="latitude">Latitude (optionnel)</label>
-    <input id="latitude" type="number" step="any" formControlName="latitude" placeholder="Ex : 14.7167" />
+    <input id="latitude" type="number" step="any" formControlName="latitude" placeholder="Ex : 16.5167" />
 
     <label for="longitude">Longitude (optionnel)</label>
-    <input id="longitude" type="number" step="any" formControlName="longitude" placeholder="Ex : -17.4677" />
+    <input id="longitude" type="number" step="any" formControlName="longitude" placeholder="Ex : -15.5" />
 
-    <label for="arrondissementId">Arrondissement</label>
-    <select id="arrondissementId" formControlName="arrondissementId">
-      <option [ngValue]="null" disabled>Choisir un arrondissement</option>
-      @for (item of arrondissements(); track item.id) {
+    <label for="communeVilleId">Commune / Ville</label>
+    <select id="communeVilleId" formControlName="communeVilleId">
+      <option [ngValue]="null" disabled>Choisir une commune/ville</option>
+      @for (item of communesVilles(); track item.id) {
         <option [ngValue]="item.id">{{ item.nom }}</option>
       }
     </select>

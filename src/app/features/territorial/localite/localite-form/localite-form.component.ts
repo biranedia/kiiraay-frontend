@@ -1,8 +1,8 @@
 import { Component, inject, signal } from '@angular/core';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Arrondissement } from '../../../../core/models/territorial.model';
-import { ArrondissementService } from '../../arrondissement/services/arrondissement.service';
+import { CommuneVille } from '../../../../core/models/territorial.model';
+import { CommuneVilleService } from '../../commune-ville/services/commune-ville.service';
 import { LocaliteService } from '../services/localite.service';
 
 @Component({
@@ -14,7 +14,7 @@ import { LocaliteService } from '../services/localite.service';
 })
 export class LocaliteFormComponent {
   private readonly fb = inject(FormBuilder);
-  private readonly arrondissementService = inject(ArrondissementService);
+  private readonly communeVilleService = inject(CommuneVilleService);
   private readonly localiteService = inject(LocaliteService);
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
@@ -23,7 +23,7 @@ export class LocaliteFormComponent {
   readonly localiteId = this.idParam ? Number(this.idParam) : null;
   readonly modeEdition = this.localiteId !== null;
 
-  readonly arrondissements = signal<Arrondissement[]>([]);
+  readonly communesVilles = signal<CommuneVille[]>([]);
   readonly enCours = signal(false);
   readonly messageErreur = signal<string | null>(null);
 
@@ -32,26 +32,26 @@ export class LocaliteFormComponent {
     type: ['QUARTIER', Validators.required],
     latitude: [null as number | null],
     longitude: [null as number | null],
-    arrondissementId: [null as number | null, Validators.required]
+    communeVilleId: [null as number | null, Validators.required]
   });
 
   constructor() {
-    this.arrondissementService.listerTous().subscribe({
-      next: (items) => this.arrondissements.set(items),
-      error: () => this.messageErreur.set('Impossible de charger les arrondissements.')
+    this.communeVilleService.listerToutes().subscribe({
+      next: (items) => this.communesVilles.set(items),
+      error: () => this.messageErreur.set('Impossible de charger les communes/villes.')
     });
 
     if (this.modeEdition && this.localiteId !== null) {
       this.localiteService.trouverParId(this.localiteId).subscribe({
         next: (item) => {
-          this.arrondissementService.listerTous().subscribe((arrondissements) => {
-            const arrondissement = arrondissements.find((a) => a.nom === item.arrondissementNom);
+          this.communeVilleService.listerToutes().subscribe((communes) => {
+            const commune = communes.find((c) => c.nom === item.communeVilleNom);
             this.formulaire.patchValue({
               nom: item.nom,
               type: item.type,
               latitude: item.latitude,
               longitude: item.longitude,
-              arrondissementId: arrondissement ? arrondissement.id : null
+              communeVilleId: commune ? commune.id : null
             });
           });
         },
@@ -74,7 +74,7 @@ export class LocaliteFormComponent {
       type: valeurs.type,
       latitude: valeurs.latitude ?? undefined,
       longitude: valeurs.longitude ?? undefined,
-      arrondissementId: valeurs.arrondissementId!
+      communeVilleId: valeurs.communeVilleId!
     };
 
     const requete$ = this.modeEdition && this.localiteId !== null

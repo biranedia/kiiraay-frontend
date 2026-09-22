@@ -1,8 +1,8 @@
 import { Component, inject, signal } from '@angular/core';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Departement } from '../../../../core/models/territorial.model';
-import { DepartementService } from '../../departement/services/departement.service';
+import { Arrondissement } from '../../../../core/models/territorial.model';
+import { ArrondissementService } from '../../arrondissement/services/arrondissement.service';
 import { CommuneVilleService } from '../services/commune-ville.service';
 
 @Component({
@@ -14,7 +14,7 @@ import { CommuneVilleService } from '../services/commune-ville.service';
 })
 export class CommuneVilleFormComponent {
   private readonly fb = inject(FormBuilder);
-  private readonly departementService = inject(DepartementService);
+  private readonly arrondissementService = inject(ArrondissementService);
   private readonly communeVilleService = inject(CommuneVilleService);
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
@@ -23,7 +23,7 @@ export class CommuneVilleFormComponent {
   readonly communeVilleId = this.idParam ? Number(this.idParam) : null;
   readonly modeEdition = this.communeVilleId !== null;
 
-  readonly departements = signal<Departement[]>([]);
+  readonly arrondissements = signal<Arrondissement[]>([]);
   readonly enCours = signal(false);
   readonly messageErreur = signal<string | null>(null);
 
@@ -31,25 +31,25 @@ export class CommuneVilleFormComponent {
     nom: ['', [Validators.required, Validators.minLength(2)]],
     type: ['COMMUNE', Validators.required],
     code: ['', [Validators.required, Validators.minLength(2)]],
-    departementId: [null as number | null, Validators.required]
+    arrondissementId: [null as number | null, Validators.required]
   });
 
   constructor() {
-    this.departementService.listerTous().subscribe({
-      next: (departements) => this.departements.set(departements),
-      error: () => this.messageErreur.set('Impossible de charger les departements.')
+    this.arrondissementService.listerTous().subscribe({
+      next: (items) => this.arrondissements.set(items),
+      error: () => this.messageErreur.set('Impossible de charger les arrondissements.')
     });
 
     if (this.modeEdition && this.communeVilleId !== null) {
       this.communeVilleService.trouverParId(this.communeVilleId).subscribe({
         next: (item) => {
-          this.departementService.listerTous().subscribe((departements) => {
-            const departement = departements.find((d) => d.nom === item.departementNom);
+          this.arrondissementService.listerTous().subscribe((arrondissements) => {
+            const arrondissement = arrondissements.find((a) => a.nom === item.arrondissementNom);
             this.formulaire.patchValue({
               nom: item.nom,
               type: item.type,
               code: item.code,
-              departementId: departement ? departement.id : null
+              arrondissementId: arrondissement ? arrondissement.id : null
             });
           });
         },
@@ -71,7 +71,7 @@ export class CommuneVilleFormComponent {
       nom: valeurs.nom,
       type: valeurs.type,
       code: valeurs.code,
-      departementId: valeurs.departementId!
+      arrondissementId: valeurs.arrondissementId!
     };
 
     const requete$ = this.modeEdition && this.communeVilleId !== null

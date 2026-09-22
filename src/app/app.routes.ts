@@ -28,24 +28,6 @@ export const routes: Routes = [
     canActivate: [authGuard]
   },
   {
-    path: 'territorial/regions',
-    canActivate: [authGuard],
-    loadComponent: () =>
-      import('./features/territorial/region-list/region-list.component').then((m) => m.RegionListComponent)
-  },
-  {
-    path: 'territorial/regions/nouveau',
-    canActivate: [authGuard],
-    loadComponent: () =>
-      import('./features/territorial/region-form/region-form.component').then((m) => m.RegionFormComponent)
-  },
-  {
-    path: 'territorial/regions/:id/modifier',
-    canActivate: [authGuard],
-    loadComponent: () =>
-      import('./features/territorial/region-form/region-form.component').then((m) => m.RegionFormComponent)
-  },
-  {
     path: 'territorial/departements',
     canActivate: [authGuard],
     loadComponent: () =>

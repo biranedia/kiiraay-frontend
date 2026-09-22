@@ -3,15 +3,27 @@ export interface Departement {
   nom: string;
   code: string;
   responsableEventuel: string | null;
-  regionNom: string;
-  nombreCommunes: number;
+  nombreArrondissements: number;
 }
 
 export interface DepartementRequest {
   nom: string;
   code: string;
   responsableEventuel?: string;
-  regionId: number;
+}
+
+export interface Arrondissement {
+  id: number;
+  nom: string;
+  code: string;
+  departementNom: string;
+  nombreCommunes: number;
+}
+
+export interface ArrondissementRequest {
+  nom: string;
+  code: string;
+  departementId: number;
 }
 
 export interface CommuneVille {
@@ -20,29 +32,15 @@ export interface CommuneVille {
   type: string;
   code: string;
   statut: string;
-  departementNom: string;
-  nombreArrondissements: number;
+  arrondissementNom: string;
+  nombreLocalites: number;
 }
 
 export interface CommuneVilleRequest {
   nom: string;
   type: string;
   code: string;
-  departementId: number;
-}
-
-export interface Arrondissement {
-  id: number;
-  nom: string;
-  code: string;
-  communeVilleNom: string;
-  nombreLocalites: number;
-}
-
-export interface ArrondissementRequest {
-  nom: string;
-  code: string;
-  communeVilleId: number;
+  arrondissementId: number;
 }
 
 export interface Localite {
@@ -51,7 +49,7 @@ export interface Localite {
   type: string;
   latitude: number | null;
   longitude: number | null;
-  arrondissementNom: string;
+  communeVilleNom: string;
 }
 
 export interface LocaliteRequest {
@@ -59,5 +57,5 @@ export interface LocaliteRequest {
   type: string;
   latitude?: number;
   longitude?: number;
-  arrondissementId: number;
+  communeVilleId: number;
 }

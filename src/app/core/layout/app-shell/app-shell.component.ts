@@ -33,10 +33,9 @@ const SECTIONS: SectionNav[] = [
   {
     titre: 'Territoire',
     liens: [
-      { libelle: 'Regions', route: '/territorial/regions', icone: 'territoire', autoriteRequise: 'TERRITOIRE_GERER' },
       { libelle: 'Departements', route: '/territorial/departements', icone: 'territoire', autoriteRequise: 'TERRITOIRE_GERER' },
-      { libelle: 'Communes / Villes', route: '/territorial/communes-villes', icone: 'territoire', autoriteRequise: 'TERRITOIRE_GERER' },
       { libelle: 'Arrondissements', route: '/territorial/arrondissements', icone: 'territoire', autoriteRequise: 'TERRITOIRE_GERER' },
+      { libelle: 'Communes / Villes', route: '/territorial/communes-villes', icone: 'territoire', autoriteRequise: 'TERRITOIRE_GERER' },
       { libelle: 'Localites', route: '/territorial/localites', icone: 'territoire', autoriteRequise: 'TERRITOIRE_GERER' }
     ]
   },

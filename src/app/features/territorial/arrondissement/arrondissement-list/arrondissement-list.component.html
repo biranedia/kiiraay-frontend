@@ -17,8 +17,8 @@
         <tr>
           <th>Code</th>
           <th>Nom</th>
-          <th>Commune/Ville</th>
-          <th>Localites</th>
+          <th>Departement</th>
+          <th>Communes</th>
           <th></th>
         </tr>
       </thead>
@@ -27,8 +27,8 @@
           <tr>
             <td>{{ item.code }}</td>
             <td>{{ item.nom }}</td>
-            <td>{{ item.communeVilleNom }}</td>
-            <td>{{ item.nombreLocalites }}</td>
+            <td>{{ item.departementNom }}</td>
+            <td>{{ item.nombreCommunes }}</td>
             <td class="actions">
               @if (peutGerer()) {
                 <a [routerLink]="['/territorial/arrondissements', item.id, 'modifier']">Modifier</a>

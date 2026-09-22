@@ -7,7 +7,7 @@
 
   <form [formGroup]="formulaire" (ngSubmit)="enregistrer()" class="formulaire">
     <label for="nom">Nom</label>
-    <input id="nom" type="text" formControlName="nom" placeholder="Ex : Pikine" />
+    <input id="nom" type="text" formControlName="nom" placeholder="Ex : Richard-Toll" />
 
     <label for="type">Type</label>
     <select id="type" formControlName="type">
@@ -16,13 +16,13 @@
     </select>
 
     <label for="code">Code</label>
-    <input id="code" type="text" formControlName="code" placeholder="Ex : PK-01" />
+    <input id="code" type="text" formControlName="code" placeholder="Ex : DAGANA-COM-02" />
 
-    <label for="departementId">Departement</label>
-    <select id="departementId" formControlName="departementId">
-      <option [ngValue]="null" disabled>Choisir un departement</option>
-      @for (departement of departements(); track departement.id) {
-        <option [ngValue]="departement.id">{{ departement.nom }}</option>
+    <label for="arrondissementId">Arrondissement</label>
+    <select id="arrondissementId" formControlName="arrondissementId">
+      <option [ngValue]="null" disabled>Choisir un arrondissement</option>
+      @for (item of arrondissements(); track item.id) {
+        <option [ngValue]="item.id">{{ item.nom }}</option>
       }
     </select>
 
