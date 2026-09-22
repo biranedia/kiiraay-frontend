@@ -45,24 +45,38 @@ import { AppShellComponent } from '../../core/layout/app-shell/app-shell.compone
     </app-shell>
   `,
   styles: [`
-    .cartes { display: flex; gap: 16px; flex-wrap: wrap; margin-bottom: 28px; }
-    .carte { background: #fff; border: 1px solid #e0e0e0; border-radius: 10px; padding: 16px 20px; min-width: 220px; }
-    .carte-label { margin: 0 0 6px; font-size: 0.78rem; color: #6b7280; text-transform: uppercase; letter-spacing: 0.5px; }
-    .carte-valeur { margin: 0; font-size: 1.15rem; font-weight: 700; color: #16233f; }
-    .carte-valeur--petit { font-size: 0.85rem; font-weight: 500; }
-    .section-titre { font-size: 0.85rem; font-weight: 700; color: #6b7280; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 12px; }
+    .cartes { display: flex; gap: 16px; flex-wrap: wrap; margin-bottom: 32px; }
+    .carte {
+      background: #fff;
+      border: 1px solid #e3e7ee;
+      border-radius: 12px;
+      padding: 18px 22px;
+      min-width: 220px;
+      box-shadow: 0 1px 2px rgba(16, 24, 40, 0.04), 0 1px 3px rgba(16, 24, 40, 0.06);
+    }
+    .carte-label { margin: 0 0 8px; font-size: 0.72rem; color: #6b7280; text-transform: uppercase; letter-spacing: 0.06em; font-weight: 700; }
+    .carte-valeur { margin: 0; font-size: 1.2rem; font-weight: 700; color: #16233f; }
+    .carte-valeur--petit { font-size: 0.85rem; font-weight: 500; line-height: 1.5; }
+    .section-titre { font-size: 0.72rem; font-weight: 700; color: #6b7280; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 14px; }
     .raccourcis { display: flex; gap: 12px; flex-wrap: wrap; }
     .raccourcis a {
       background: #fff;
-      border: 1px solid #e0e0e0;
-      border-radius: 8px;
-      padding: 10px 16px;
+      border: 1px solid #e3e7ee;
+      border-radius: 10px;
+      padding: 12px 18px;
       color: #16233f;
       text-decoration: none;
       font-weight: 600;
       font-size: 0.88rem;
+      box-shadow: 0 1px 2px rgba(16, 24, 40, 0.04);
+      transition: border-color 0.15s ease, color 0.15s ease, box-shadow 0.15s ease, transform 0.1s ease;
     }
-    .raccourcis a:hover { border-color: #1f7a8c; color: #1f7a8c; }
+    .raccourcis a:hover {
+      border-color: #1f7a8c;
+      color: #1f7a8c;
+      box-shadow: 0 4px 10px rgba(16, 24, 40, 0.08);
+      transform: translateY(-1px);
+    }
   `]
 })
 export class DashboardComponent {

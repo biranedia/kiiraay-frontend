@@ -75,21 +75,26 @@
   align-items: center;
   gap: 10px;
   padding: 9px 10px;
-  border-radius: 6px;
+  border-radius: 7px;
   color: #cfd8e8;
   text-decoration: none;
   font-size: 0.88rem;
+  font-weight: 500;
   margin-bottom: 2px;
+  transition: background 0.12s ease, color 0.12s ease;
 
   svg { flex-shrink: 0; opacity: 0.75; }
 
   &:hover {
-    background: rgba(255, 255, 255, 0.06);
+    background: rgba(255, 255, 255, 0.08);
+    color: #fff;
   }
 
   &.actif {
     background: #1f7a8c;
     color: #fff;
+    font-weight: 600;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
 
     svg { opacity: 1; }
   }
@@ -130,17 +135,23 @@
 
 .entete-page {
   background: #fff;
-  border-bottom: 1px solid #e0e0e0;
+  border-bottom: 1px solid #e3e7ee;
+  box-shadow: 0 1px 2px rgba(16, 24, 40, 0.03);
   padding: 20px 32px;
   display: flex;
   align-items: center;
   justify-content: space-between;
   flex-wrap: wrap;
   gap: 12px;
+  position: sticky;
+  top: 0;
+  z-index: 5;
 
   h1 {
     margin: 0;
     font-size: 1.4rem;
+    font-weight: 700;
+    letter-spacing: -0.01em;
     color: #16233f;
   }
 }
