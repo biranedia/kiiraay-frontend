@@ -1,5 +1,5 @@
 <div class="coquille">
-  <aside class="barre-laterale">
+  <aside class="barre-laterale" [class.ouverte]="menuMobileOuvert()">
     <div class="logo-bloc">
       <span class="logo-badge">K</span>
       <div>
@@ -14,7 +14,7 @@
           <p class="section-titre">{{ section.titre }}</p>
         }
         @for (lien of section.liens; track lien.route) {
-          <a [routerLink]="lien.route" routerLinkActive="actif" class="lien-nav">
+          <a [routerLink]="lien.route" routerLinkActive="actif" class="lien-nav" (click)="fermerMenuMobile()">
             <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path [attr.d]="ICONES[lien.icone]"/></svg>
             <span>{{ lien.libelle }}</span>
           </a>
@@ -30,8 +30,15 @@
     </div>
   </aside>
 
+  @if (menuMobileOuvert()) {
+    <div class="voile-menu-mobile" (click)="fermerMenuMobile()"></div>
+  }
+
   <div class="zone-contenu">
     <header class="entete-page">
+      <button type="button" class="bouton-hamburger" (click)="basculerMenuMobile()" aria-label="Ouvrir le menu">
+        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+      </button>
       <div>
         <h1>{{ titre }}</h1>
         @if (sousTitre) {

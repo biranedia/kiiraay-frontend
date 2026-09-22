@@ -349,4 +349,28 @@ a { color: inherit; }
     overflow-x: auto;
     white-space: nowrap;
   }
+
+  .page {
+    padding: 8px 12px 32px;
+  }
+
+  .formulaire {
+    padding: 18px;
+  }
+
+  .page-header {
+    align-items: flex-start;
+  }
+}
+
+// Sous 480px, les boutons d'action (Annuler / Enregistrer, etc.) passent en pleine largeur
+// et s'empilent : cote a cote ils deviennent trop etroits pour rester confortables au doigt.
+@media (max-width: 480px) {
+  .boutons {
+    flex-direction: column;
+
+    button {
+      width: 100%;
+    }
+  }
 }

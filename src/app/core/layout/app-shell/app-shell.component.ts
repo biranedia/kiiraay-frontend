@@ -83,6 +83,10 @@ export class AppShellComponent implements OnInit {
   readonly notifications = signal<NotificationAlerte[]>([]);
   readonly panneauOuvert = signal(false);
 
+  // Menu mobile repliable (section responsive) : ferme par defaut, ouvert via le bouton
+  // hamburger affiche uniquement sous 900px (voir app-shell.component.scss).
+  readonly menuMobileOuvert = signal(false);
+
   ngOnInit(): void {
     this.chargerNotifications();
   }
@@ -92,6 +96,14 @@ export class AppShellComponent implements OnInit {
       next: (notifications) => this.notifications.set(notifications),
       error: () => this.notifications.set([])
     });
+  }
+
+  basculerMenuMobile(): void {
+    this.menuMobileOuvert.update((ouvert) => !ouvert);
+  }
+
+  fermerMenuMobile(): void {
+    this.menuMobileOuvert.set(false);
   }
 
   basculerPanneauNotifications(): void {
