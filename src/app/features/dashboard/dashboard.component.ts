@@ -290,6 +290,7 @@ const ICONES: Record<string, string> = {
           <a routerLink="/membre/membres">Membres</a>
         }
         @if (authService.possede('ADMIN_GENERAL')) {
+          <a routerLink="/utilisateurs">Utilisateurs</a>
           <a routerLink="/utilisateurs/nouveau">Nouvel utilisateur</a>
         }
       </nav>

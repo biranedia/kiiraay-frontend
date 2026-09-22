@@ -55,3 +55,9 @@ export interface ChangerMotDePasseRequest {
   motDePasseActuel: string;
   nouveauMotDePasse: string;
 }
+
+// Modification des roles d'un utilisateur existant (gestion des comptes par un administrateur,
+// distincte de la creation via RegisterRequest).
+export interface ModifierRolesRequest {
+  roles: string[];
+}

@@ -15,6 +15,14 @@ export const routes: Routes = [
       import('./features/auth/activation/activation.component').then((m) => m.ActivationComponent)
   },
   {
+    path: 'utilisateurs',
+    canActivate: [authGuard],
+    loadComponent: () =>
+      import('./features/utilisateur/utilisateur-liste/utilisateur-liste.component').then(
+        (m) => m.UtilisateurListeComponent
+      )
+  },
+  {
     path: 'utilisateurs/nouveau',
     canActivate: [authGuard],
     loadComponent: () =>

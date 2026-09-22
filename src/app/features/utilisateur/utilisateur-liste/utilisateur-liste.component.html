@@ -1,0 +1,80 @@
+@if (accesRefuse) {
+  <div class="page">
+    <p class="message-erreur">Acces reserve a l'administrateur general.</p>
+  </div>
+} @else {
+<app-shell titre="Utilisateurs" sousTitre="Comptes de la plateforme et leurs roles">
+  <a actions routerLink="/utilisateurs/nouveau" class="bouton-primaire">+ Nouvel utilisateur</a>
+
+  @if (messageErreur()) {
+    <p class="message-erreur">{{ messageErreur() }}</p>
+  }
+
+  @if (enChargement()) {
+    <p>Chargement...</p>
+  } @else if (lignes().length === 0) {
+    <p>Aucun utilisateur enregistre pour le moment.</p>
+  } @else {
+    <div class="liste-utilisateurs">
+      @for (ligne of lignes(); track ligne.utilisateur.id) {
+        <div class="carte-utilisateur">
+          <div class="entete-utilisateur">
+            <div>
+              <p class="nom-utilisateur">{{ ligne.utilisateur.prenom }} {{ ligne.utilisateur.nom }}</p>
+              <p class="details-utilisateur">{{ ligne.utilisateur.login }} · {{ ligne.utilisateur.email }}</p>
+            </div>
+            <span class="badge" [class]="ligne.utilisateur.actif ? 'badge-actif' : 'badge-inactive'">
+              {{ ligne.utilisateur.actif ? 'Actif' : 'Inactif' }}
+            </span>
+          </div>
+
+          @if (ligne.message) {
+            <p class="message-ligne">{{ ligne.message }}</p>
+          }
+
+          <div class="grille-roles">
+            @for (role of rolesDisponibles; track role.code) {
+              <label class="case-role">
+                <input
+                  type="checkbox"
+                  [checked]="ligne.rolesCoches.has(role.code)"
+                  (change)="basculerRole(ligne, role.code)"
+                  [disabled]="ligne.enCours"
+                />
+                {{ role.libelle }}
+              </label>
+            }
+          </div>
+
+          <div class="actions-ligne">
+            <button type="button" class="bouton-secondaire" [disabled]="ligne.enCours" (click)="enregistrerRoles(ligne)">
+              Enregistrer les roles
+            </button>
+            <button
+              type="button"
+              class="bouton-secondaire"
+              [disabled]="ligne.enCours"
+              (click)="renvoyerActivation(ligne)"
+            >
+              Renvoyer le lien d'activation / reinitialiser le mot de passe
+            </button>
+            @if (estSoiMeme(ligne)) {
+              <span class="note-soi-meme" title="Vous ne pouvez pas desactiver votre propre compte">
+                (votre compte)
+              </span>
+            } @else if (ligne.utilisateur.actif) {
+              <button type="button" class="lien-danger" [disabled]="ligne.enCours" (click)="basculerStatut(ligne)">
+                Desactiver
+              </button>
+            } @else {
+              <button type="button" class="bouton-primaire" [disabled]="ligne.enCours" (click)="basculerStatut(ligne)">
+                Reactiver
+              </button>
+            }
+          </div>
+        </div>
+      }
+    </div>
+  }
+</app-shell>
+}
