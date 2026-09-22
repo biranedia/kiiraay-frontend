@@ -4,10 +4,11 @@ import { Localite } from '../../../../core/models/territorial.model';
 import { LocaliteService } from '../services/localite.service';
 import { AuthService } from '../../../../core/services/auth.service';
 
+import { AppShellComponent } from '../../../../core/layout/app-shell/app-shell.component';
 @Component({
   selector: 'app-localite-list',
   standalone: true,
-  imports: [RouterLink],
+  imports: [RouterLink, AppShellComponent],
   templateUrl: './localite-list.component.html',
   styleUrl: './localite-list.component.scss'
 })

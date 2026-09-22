@@ -1,10 +1,7 @@
-<div class="page">
-  <div class="page-header">
-    <h1>Cellules</h1>
-    @if (peutGerer()) {
-      <a routerLink="/cellule/cellules/nouveau" class="bouton-primaire">+ Nouvelle cellule</a>
+<app-shell titre="Cellules" sousTitre="Creation, workflow et suivi des cellules">
+  @if (peutGerer()) {
+      <a actions routerLink="/cellule/cellules/nouveau" class="bouton-primaire">+ Nouvelle cellule</a>
     }
-  </div>
 
   @if (messageErreur()) {
     <p class="message-erreur">{{ messageErreur() }}</p>
@@ -61,4 +58,4 @@
       </tbody>
     </table>
   }
-</div>
+</app-shell>

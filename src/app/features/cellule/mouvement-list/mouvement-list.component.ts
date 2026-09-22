@@ -1,13 +1,14 @@
 import { Component, inject, signal } from '@angular/core';
-import { ActivatedRoute, RouterLink } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { Mouvement } from '../../../core/models/mouvement.model';
 import { MouvementService } from '../services/mouvement.service';
 import { AuthService } from '../../../core/services/auth.service';
+import { AppShellComponent } from '../../../core/layout/app-shell/app-shell.component';
 
 @Component({
   selector: 'app-mouvement-list',
   standalone: true,
-  imports: [RouterLink],
+  imports: [AppShellComponent],
   templateUrl: './mouvement-list.component.html',
   styleUrl: './mouvement-list.component.scss'
 })

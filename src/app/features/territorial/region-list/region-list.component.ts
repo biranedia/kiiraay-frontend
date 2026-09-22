@@ -4,10 +4,11 @@ import { Region } from '../../../core/models/region.model';
 import { RegionService } from '../services/region.service';
 import { AuthService } from '../../../core/services/auth.service';
 
+import { AppShellComponent } from '../../../core/layout/app-shell/app-shell.component';
 @Component({
   selector: 'app-region-list',
   standalone: true,
-  imports: [RouterLink],
+  imports: [RouterLink, AppShellComponent],
   templateUrl: './region-list.component.html',
   styleUrl: './region-list.component.scss'
 })

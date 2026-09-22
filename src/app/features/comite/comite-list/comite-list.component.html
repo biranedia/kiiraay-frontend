@@ -1,10 +1,7 @@
-<div class="page">
-  <div class="page-header">
-    <h1>Comites</h1>
-    @if (peutGerer()) {
-      <a routerLink="/comite/comites/nouveau" class="bouton-primaire">+ Nouveau comite</a>
+<app-shell titre="Comites" sousTitre="Suivi de remplissage et validation des comites">
+  @if (peutGerer()) {
+      <a actions routerLink="/comite/comites/nouveau" class="bouton-primaire">+ Nouveau comite</a>
     }
-  </div>
 
   @if (messageErreur()) {
     <p class="message-erreur">{{ messageErreur() }}</p>
@@ -53,4 +50,4 @@
       </tbody>
     </table>
   }
-</div>
+</app-shell>

@@ -4,10 +4,11 @@ import { Cellule } from '../../../core/models/cellule.model';
 import { CelluleService } from '../services/cellule.service';
 import { AuthService } from '../../../core/services/auth.service';
 
+import { AppShellComponent } from '../../../core/layout/app-shell/app-shell.component';
 @Component({
   selector: 'app-cellule-list',
   standalone: true,
-  imports: [RouterLink],
+  imports: [RouterLink, AppShellComponent],
   templateUrl: './cellule-list.component.html',
   styleUrl: './cellule-list.component.scss'
 })

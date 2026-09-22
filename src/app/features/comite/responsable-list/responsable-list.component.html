@@ -1,10 +1,7 @@
-<div class="page">
-  <div class="page-header">
-    <h1>Responsables</h1>
-    @if (peutGerer()) {
-      <a routerLink="/comite/responsables/nouveau" class="bouton-primaire">+ Nouveau responsable</a>
+<app-shell titre="Responsables" sousTitre="Responsables geres pour les comites">
+  @if (peutGerer()) {
+      <a actions routerLink="/comite/responsables/nouveau" class="bouton-primaire">+ Nouveau responsable</a>
     }
-  </div>
 
   @if (messageErreur()) {
     <p class="message-erreur">{{ messageErreur() }}</p>
@@ -42,4 +39,4 @@
       </tbody>
     </table>
   }
-</div>
+</app-shell>

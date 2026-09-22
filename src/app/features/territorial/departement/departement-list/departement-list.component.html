@@ -1,10 +1,7 @@
-<div class="page">
-  <div class="page-header">
-    <h1>Departements</h1>
-    @if (peutGerer()) {
-      <a routerLink="/territorial/departements/nouveau" class="bouton-primaire">+ Nouveau departement</a>
+<app-shell titre="Departements" sousTitre="Gestion de la hierarchie territoriale">
+  @if (peutGerer()) {
+      <a actions routerLink="/territorial/departements/nouveau" class="bouton-primaire">+ Nouveau departement</a>
     }
-  </div>
 
   @if (messageErreur()) {
     <p class="message-erreur">{{ messageErreur() }}</p>
@@ -45,4 +42,4 @@
       </tbody>
     </table>
   }
-</div>
+</app-shell>

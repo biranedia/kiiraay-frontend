@@ -1,10 +1,7 @@
-<div class="page">
-  <div class="page-header">
-    <h1>Membres</h1>
-    @if (peutGerer()) {
-      <a routerLink="/membre/membres/nouveau" class="bouton-primaire">+ Nouveau membre</a>
+<app-shell titre="Membres" sousTitre="Adherents enregistres dans la base">
+  @if (peutGerer()) {
+      <a actions routerLink="/membre/membres/nouveau" class="bouton-primaire">+ Nouveau membre</a>
     }
-  </div>
 
   @if (messageErreur()) {
     <p class="message-erreur">{{ messageErreur() }}</p>
@@ -67,4 +64,4 @@
       </tbody>
     </table>
   }
-</div>
+</app-shell>

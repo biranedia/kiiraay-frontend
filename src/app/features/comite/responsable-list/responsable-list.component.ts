@@ -4,10 +4,11 @@ import { Responsable } from '../../../core/models/comite.model';
 import { ResponsableService } from '../services/responsable.service';
 import { AuthService } from '../../../core/services/auth.service';
 
+import { AppShellComponent } from '../../../core/layout/app-shell/app-shell.component';
 @Component({
   selector: 'app-responsable-list',
   standalone: true,
-  imports: [RouterLink],
+  imports: [RouterLink, AppShellComponent],
   templateUrl: './responsable-list.component.html',
   styleUrl: './responsable-list.component.scss'
 })

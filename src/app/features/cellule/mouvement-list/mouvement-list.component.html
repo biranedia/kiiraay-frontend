@@ -1,13 +1,7 @@
-<div class="page">
-  <div class="page-header">
-    <h1>Mouvements de la cellule</h1>
-    <div class="entete-actions">
-      @if (peutGerer()) {
-        <a [routerLink]="['/cellule/cellules', celluleId, 'mouvements', 'nouveau']" class="bouton-primaire">+ Nouveau mouvement</a>
-      }
-      <a routerLink="/cellule/cellules">Retour aux cellules</a>
-    </div>
-  </div>
+<app-shell titre="Mouvements de la cellule" sousTitre="Initiatives et mouvements rattaches (section 6 du cahier des charges)">
+  @if (peutGerer()) {
+    <a actions [routerLink]="['/cellule/cellules', celluleId, 'mouvements', 'nouveau']" class="bouton-primaire">+ Nouveau mouvement</a>
+  }
 
   @if (messageErreur()) {
     <p class="message-erreur">{{ messageErreur() }}</p>
@@ -53,4 +47,4 @@
       </tbody>
     </table>
   }
-</div>
+</app-shell>

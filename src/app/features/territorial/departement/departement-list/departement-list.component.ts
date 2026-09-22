@@ -4,10 +4,11 @@ import { Departement } from '../../../../core/models/territorial.model';
 import { DepartementService } from '../services/departement.service';
 import { AuthService } from '../../../../core/services/auth.service';
 
+import { AppShellComponent } from '../../../../core/layout/app-shell/app-shell.component';
 @Component({
   selector: 'app-departement-list',
   standalone: true,
-  imports: [RouterLink],
+  imports: [RouterLink, AppShellComponent],
   templateUrl: './departement-list.component.html',
   styleUrl: './departement-list.component.scss'
 })

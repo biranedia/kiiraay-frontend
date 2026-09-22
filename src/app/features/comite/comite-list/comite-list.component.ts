@@ -4,10 +4,11 @@ import { Comite } from '../../../core/models/comite.model';
 import { ComiteService } from '../services/comite.service';
 import { AuthService } from '../../../core/services/auth.service';
 
+import { AppShellComponent } from '../../../core/layout/app-shell/app-shell.component';
 @Component({
   selector: 'app-comite-list',
   standalone: true,
-  imports: [RouterLink],
+  imports: [RouterLink, AppShellComponent],
   templateUrl: './comite-list.component.html',
   styleUrl: './comite-list.component.scss'
 })

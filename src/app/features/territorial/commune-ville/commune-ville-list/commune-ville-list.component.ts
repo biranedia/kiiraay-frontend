@@ -4,10 +4,11 @@ import { CommuneVille } from '../../../../core/models/territorial.model';
 import { CommuneVilleService } from '../services/commune-ville.service';
 import { AuthService } from '../../../../core/services/auth.service';
 
+import { AppShellComponent } from '../../../../core/layout/app-shell/app-shell.component';
 @Component({
   selector: 'app-commune-ville-list',
   standalone: true,
-  imports: [RouterLink],
+  imports: [RouterLink, AppShellComponent],
   templateUrl: './commune-ville-list.component.html',
   styleUrl: './commune-ville-list.component.scss'
 })

@@ -1,8 +1,4 @@
-<div class="page">
-  <div class="page-header">
-    <h1>Bureau de la cellule</h1>
-    <a routerLink="/cellule/cellules">Retour aux cellules</a>
-  </div>
+<app-shell titre="Bureau de la cellule" sousTitre="Nomination des 8 fonctions (section 5 du cahier des charges)">
 
   @if (messageErreur()) {
     <p class="message-erreur">{{ messageErreur() }}</p>
@@ -75,4 +71,4 @@
       </div>
     }
   }
-</div>
+</app-shell>

@@ -1,0 +1,49 @@
+<div class="coquille">
+  <aside class="barre-laterale">
+    <div class="logo-bloc">
+      <span class="logo-badge">K</span>
+      <div>
+        <p class="logo-titre">KIIRAAY</p>
+        <p class="logo-sous-titre">Base departementale</p>
+      </div>
+    </div>
+
+    <nav class="navigation">
+      @for (section of sectionsVisibles; track section.titre) {
+        @if (section.titre) {
+          <p class="section-titre">{{ section.titre }}</p>
+        }
+        @for (lien of section.liens; track lien.route) {
+          <a [routerLink]="lien.route" routerLinkActive="actif" class="lien-nav">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path [attr.d]="ICONES[lien.icone]"/></svg>
+            <span>{{ lien.libelle }}</span>
+          </a>
+        }
+      }
+    </nav>
+
+    <div class="pied-barre">
+      @if (utilisateurConnecte) {
+        <p class="utilisateur-courant">{{ utilisateurConnecte.login }}</p>
+      }
+      <button type="button" class="bouton-deconnexion" (click)="deconnecter()">Se deconnecter</button>
+    </div>
+  </aside>
+
+  <div class="zone-contenu">
+    <header class="entete-page">
+      <div>
+        <h1>{{ titre }}</h1>
+        @if (sousTitre) {
+          <p class="sous-titre">{{ sousTitre }}</p>
+        }
+      </div>
+      <div class="entete-actions">
+        <ng-content select="[actions]"></ng-content>
+      </div>
+    </header>
+    <main class="corps-page">
+      <ng-content></ng-content>
+    </main>
+  </div>
+</div>

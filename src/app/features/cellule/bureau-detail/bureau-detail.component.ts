@@ -1,9 +1,10 @@
 import { Component, inject, signal } from '@angular/core';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
-import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { BureauCellule, FONCTIONS_BUREAU, FonctionBureau, TypeFonction } from '../../../core/models/bureau.model';
 import { BureauService } from '../services/bureau.service';
 import { AuthService } from '../../../core/services/auth.service';
+import { AppShellComponent } from '../../../core/layout/app-shell/app-shell.component';
 
 // Vue "gestion du bureau" d'une cellule : les 8 fonctions fixees par le cahier des
 // charges, chacune soit vacante (formulaire de nomination), soit pourvue (titulaire +
@@ -11,7 +12,7 @@ import { AuthService } from '../../../core/services/auth.service';
 @Component({
   selector: 'app-bureau-detail',
   standalone: true,
-  imports: [ReactiveFormsModule, RouterLink],
+  imports: [ReactiveFormsModule, AppShellComponent],
   templateUrl: './bureau-detail.component.html',
   styleUrl: './bureau-detail.component.scss'
 })

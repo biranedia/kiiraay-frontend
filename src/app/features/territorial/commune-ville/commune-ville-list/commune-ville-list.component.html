@@ -1,10 +1,7 @@
-<div class="page">
-  <div class="page-header">
-    <h1>Communes / Villes</h1>
-    @if (peutGerer()) {
-      <a routerLink="/territorial/communes-villes/nouveau" class="bouton-primaire">+ Nouvelle commune/ville</a>
+<app-shell titre="Communes / Villes" sousTitre="Gestion de la hierarchie territoriale">
+  @if (peutGerer()) {
+      <a actions routerLink="/territorial/communes-villes/nouveau" class="bouton-primaire">+ Nouvelle commune/ville</a>
     }
-  </div>
 
   @if (messageErreur()) {
     <p class="message-erreur">{{ messageErreur() }}</p>
@@ -47,4 +44,4 @@
       </tbody>
     </table>
   }
-</div>
+</app-shell>

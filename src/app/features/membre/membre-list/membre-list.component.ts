@@ -4,10 +4,11 @@ import { Membre } from '../../../core/models/membre.model';
 import { MembreService } from '../services/membre.service';
 import { AuthService } from '../../../core/services/auth.service';
 
+import { AppShellComponent } from '../../../core/layout/app-shell/app-shell.component';
 @Component({
   selector: 'app-membre-list',
   standalone: true,
-  imports: [RouterLink],
+  imports: [RouterLink, AppShellComponent],
   templateUrl: './membre-list.component.html',
   styleUrl: './membre-list.component.scss'
 })

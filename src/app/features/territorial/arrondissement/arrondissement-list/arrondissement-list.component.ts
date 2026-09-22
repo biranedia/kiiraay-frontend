@@ -4,10 +4,11 @@ import { Arrondissement } from '../../../../core/models/territorial.model';
 import { ArrondissementService } from '../services/arrondissement.service';
 import { AuthService } from '../../../../core/services/auth.service';
 
+import { AppShellComponent } from '../../../../core/layout/app-shell/app-shell.component';
 @Component({
   selector: 'app-arrondissement-list',
   standalone: true,
-  imports: [RouterLink],
+  imports: [RouterLink, AppShellComponent],
   templateUrl: './arrondissement-list.component.html',
   styleUrl: './arrondissement-list.component.scss'
 })
