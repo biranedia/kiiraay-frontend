@@ -3,6 +3,29 @@
       <a actions routerLink="/membre/membres/nouveau" class="bouton-primaire">+ Nouveau membre</a>
     }
 
+  <div class="barre-filtres">
+    <input type="text" placeholder="Nom" [(ngModel)]="filtres.nom" (keyup.enter)="rechercher()" />
+    <input type="text" placeholder="Prenom" [(ngModel)]="filtres.prenom" (keyup.enter)="rechercher()" />
+    <input type="text" placeholder="Telephone" [(ngModel)]="filtres.telephone" (keyup.enter)="rechercher()" />
+    <select [(ngModel)]="filtres.statut">
+      <option value="">Tous les statuts</option>
+      <option value="BROUILLON">Brouillon</option>
+      <option value="EN_ATTENTE">En attente</option>
+      <option value="VALIDE">Valide</option>
+      <option value="NON_VALIDE">Non valide</option>
+      <option value="SUSPENDU">Suspendu</option>
+    </select>
+    <button type="button" (click)="rechercher()">Rechercher</button>
+    @if (filtresActifs()) {
+      <button type="button" class="bouton-lien" (click)="reinitialiserFiltres()">Reinitialiser</button>
+    }
+    @if (peutExporter()) {
+      <button type="button" class="bouton-secondaire" (click)="exporterCsv()" [disabled]="enExport()">
+        {{ enExport() ? 'Export...' : 'Exporter CSV' }}
+      </button>
+    }
+  </div>
+
   @if (messageErreur()) {
     <p class="message-erreur">{{ messageErreur() }}</p>
   }

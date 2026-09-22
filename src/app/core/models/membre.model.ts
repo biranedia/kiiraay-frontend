@@ -41,3 +41,15 @@ export interface MembreRequest {
   lieuDelivranceCNI?: string;
   numeroCarteElecteur?: string;
 }
+
+// Criteres optionnels de recherche multi-criteres (section 12 du cahier des charges) :
+// tous les champs sont facultatifs et combinables.
+export interface MembreCritereRecherche {
+  nom?: string;
+  prenom?: string;
+  telephone?: string;
+  numeroCNI?: string;
+  numeroCarteElecteur?: string;
+  statut?: StatutMembre;
+  comiteId?: number;
+}

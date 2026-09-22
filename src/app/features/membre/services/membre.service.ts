@@ -2,7 +2,8 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from '../../../../environments/environment';
-import { Membre, MembreRequest } from '../../../core/models/membre.model';
+import { HttpParams } from '@angular/common/http';
+import { Membre, MembreCritereRecherche, MembreRequest } from '../../../core/models/membre.model';
 
 @Injectable({ providedIn: 'root' })
 export class MembreService {
@@ -11,6 +12,28 @@ export class MembreService {
 
   listerTous(): Observable<Membre[]> {
     return this.http.get<Membre[]>(this.baseUrl);
+  }
+
+  // Recherche multi-criteres (section 12 du cahier des charges). Les champs non renseignes
+  // sont simplement omis de la requete (le backend les ignore alors).
+  rechercher(criteres: MembreCritereRecherche): Observable<Membre[]> {
+    return this.http.get<Membre[]>(`${this.baseUrl}/recherche`, { params: this.versParametres(criteres) });
+  }
+
+  // Export CSV des membres correspondant aux memes criteres que rechercher(). Le blob est
+  // ensuite transforme en telechargement par l'appelant (voir MembreListComponent).
+  exporterCsv(criteres: MembreCritereRecherche): Observable<Blob> {
+    return this.http.get(`${this.baseUrl}/export`, { params: this.versParametres(criteres), responseType: 'blob' });
+  }
+
+  private versParametres(criteres: MembreCritereRecherche): HttpParams {
+    let parametres = new HttpParams();
+    Object.entries(criteres).forEach(([cle, valeur]) => {
+      if (valeur !== undefined && valeur !== null && valeur !== '') {
+        parametres = parametres.set(cle, String(valeur));
+      }
+    });
+    return parametres;
   }
 
   trouverParId(id: number): Observable<Membre> {
