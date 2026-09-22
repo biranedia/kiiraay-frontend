@@ -2,6 +2,7 @@ import { Component, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { Departement } from '../../../../core/models/territorial.model';
 import { DepartementService } from '../services/departement.service';
+import { AuthService } from '../../../../core/services/auth.service';
 
 @Component({
   selector: 'app-departement-list',
@@ -12,6 +13,7 @@ import { DepartementService } from '../services/departement.service';
 })
 export class DepartementListComponent {
   private readonly departementService = inject(DepartementService);
+  private readonly authService = inject(AuthService);
 
   readonly departements = signal<Departement[]>([]);
   readonly enChargement = signal(true);
@@ -19,6 +21,10 @@ export class DepartementListComponent {
 
   constructor() {
     this.charger();
+  }
+
+  peutGerer(): boolean {
+    return this.authService.possede('TERRITOIRE_GERER');
   }
 
   charger(): void {

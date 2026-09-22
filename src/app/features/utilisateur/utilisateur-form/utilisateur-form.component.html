@@ -1,0 +1,49 @@
+<div class="page">
+  @if (accesRefuse) {
+    <p class="message-erreur">Acces reserve a l'administrateur general.</p>
+  } @else {
+    <h1>Nouvel utilisateur</h1>
+    <p class="note">
+      Aucun mot de passe n'est defini ici : l'utilisateur recevra un email pour choisir lui-meme
+      le sien via un lien d'activation valable 48 heures.
+    </p>
+
+    @if (messageSucces()) {
+      <p class="message-succes">{{ messageSucces() }}</p>
+    }
+    @if (messageErreur()) {
+      <p class="message-erreur">{{ messageErreur() }}</p>
+    }
+
+    <form [formGroup]="formulaire" (ngSubmit)="soumettre()" class="formulaire">
+      <label for="login">Identifiant (login)</label>
+      <input id="login" type="text" formControlName="login" />
+
+      <label for="email">Email</label>
+      <input id="email" type="email" formControlName="email" />
+
+      <label for="nom">Nom</label>
+      <input id="nom" type="text" formControlName="nom" />
+
+      <label for="prenom">Prenom</label>
+      <input id="prenom" type="text" formControlName="prenom" />
+
+      <fieldset class="bloc-roles" formGroupName="roles">
+        <legend>Roles</legend>
+        @for (role of rolesDisponibles; track role.code) {
+          <label class="ligne-role">
+            <input type="checkbox" [formControlName]="role.code" />
+            {{ role.libelle }}
+          </label>
+        }
+      </fieldset>
+
+      <div class="boutons">
+        <button type="button" class="bouton-secondaire" (click)="annuler()">Annuler</button>
+        <button type="submit" class="bouton-primaire" [disabled]="enCours()">
+          {{ enCours() ? 'Creation...' : 'Creer le compte' }}
+        </button>
+      </div>
+    </form>
+  }
+</div>

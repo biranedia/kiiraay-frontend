@@ -1,0 +1,97 @@
+.page {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 24px 16px;
+}
+
+.page-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 8px;
+
+  h1 { margin: 0; font-size: 1.6rem; }
+  a { color: #1e3a5f; }
+}
+
+.sous-titre { color: #555; margin-bottom: 20px; }
+
+.message-erreur { color: #b3261e; margin-bottom: 16px; }
+
+.tableau {
+  width: 100%;
+  border-collapse: collapse;
+
+  th, td {
+    text-align: left;
+    padding: 10px 12px;
+    border-bottom: 1px solid #e0e0e0;
+    vertical-align: middle;
+  }
+
+  th { font-weight: 600; color: #444; }
+}
+
+.vacant { color: #8a6300; font-style: italic; }
+
+.actions button {
+  background: none;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  padding: 5px 12px;
+  cursor: pointer;
+  font-size: 0.85rem;
+}
+
+.lien-danger {
+  border-color: #f0c4c4 !important;
+  color: #b3261e;
+}
+
+.panneau-nomination {
+  margin-top: 24px;
+  padding: 20px;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  background: #fafafa;
+  max-width: 420px;
+
+  h2 { margin: 0 0 16px; font-size: 1.15rem; }
+}
+
+.formulaire {
+  display: flex;
+  flex-direction: column;
+
+  label { font-weight: 600; margin-bottom: 6px; color: #333; }
+
+  input {
+    padding: 10px 12px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    margin-bottom: 16px;
+    font-size: 1rem;
+  }
+}
+
+.boutons { display: flex; gap: 12px; }
+
+.bouton-primaire {
+  background: #1e3a5f;
+  color: #fff;
+  border: none;
+  padding: 10px 18px;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.bouton-secondaire {
+  background: none;
+  border: 1px solid #ccc;
+  padding: 10px 18px;
+  border-radius: 6px;
+  cursor: pointer;
+}

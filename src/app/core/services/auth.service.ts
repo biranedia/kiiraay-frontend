@@ -3,7 +3,15 @@ import { Injectable, computed, inject, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { Observable, tap } from 'rxjs';
 import { environment } from '../../../environments/environment';
-import { AuthResponse, LoginRequest, UtilisateurConnecte } from '../models/auth.model';
+import {
+  ActivationRequest,
+  AuthResponse,
+  InfoActivationResponse,
+  LoginRequest,
+  RegisterRequest,
+  UtilisateurConnecte,
+  UtilisateurResponse
+} from '../models/auth.model';
 
 const CLE_ACCESS_TOKEN = 'kiiraay_access_token';
 const CLE_REFRESH_TOKEN = 'kiiraay_refresh_token';
@@ -56,6 +64,22 @@ export class AuthService {
     const utilisateur = this.utilisateurSignal();
     if (!utilisateur) return false;
     return utilisateur.autorites.includes(autorite) || utilisateur.autorites.includes('ROLE_' + autorite);
+  }
+
+  // --- Creation de compte par un administrateur + activation par l'utilisateur lui-meme ---
+  // Aucun mot de passe n'est jamais choisi ou vu par l'administrateur (voir AuthService cote
+  // backend) : l'utilisateur le definit lui-meme via le lien recu par email.
+
+  inscrire(request: RegisterRequest): Observable<UtilisateurResponse> {
+    return this.http.post<UtilisateurResponse>(`${environment.apiUrl}/auth/inscrire`, request);
+  }
+
+  verifierActivation(token: string): Observable<InfoActivationResponse> {
+    return this.http.get<InfoActivationResponse>(`${environment.apiUrl}/auth/activation/${token}`);
+  }
+
+  activerCompte(request: ActivationRequest): Observable<void> {
+    return this.http.post<void>(`${environment.apiUrl}/auth/activer-compte`, request);
   }
 
   private stockerSession(reponse: AuthResponse): void {

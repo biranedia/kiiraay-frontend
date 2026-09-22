@@ -1,0 +1,25 @@
+<div class="page">
+  <h1>{{ modeEdition ? 'Modifier le responsable' : 'Nouveau responsable' }}</h1>
+
+  @if (messageErreur()) {
+    <p class="message-erreur">{{ messageErreur() }}</p>
+  }
+
+  <form [formGroup]="formulaire" (ngSubmit)="enregistrer()" class="formulaire">
+    <label for="nom">Nom</label>
+    <input id="nom" type="text" formControlName="nom" />
+
+    <label for="prenom">Prenom</label>
+    <input id="prenom" type="text" formControlName="prenom" />
+
+    <label for="contact">Contact (optionnel)</label>
+    <input id="contact" type="text" formControlName="contact" placeholder="Telephone ou email" />
+
+    <div class="boutons">
+      <button type="button" class="bouton-secondaire" (click)="annuler()">Annuler</button>
+      <button type="submit" class="bouton-primaire" [disabled]="enCours()">
+        {{ enCours() ? 'Enregistrement...' : 'Enregistrer' }}
+      </button>
+    </div>
+  </form>
+</div>

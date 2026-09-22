@@ -1,0 +1,45 @@
+<div class="page">
+  <div class="page-header">
+    <h1>Responsables</h1>
+    @if (peutGerer()) {
+      <a routerLink="/comite/responsables/nouveau" class="bouton-primaire">+ Nouveau responsable</a>
+    }
+  </div>
+
+  @if (messageErreur()) {
+    <p class="message-erreur">{{ messageErreur() }}</p>
+  }
+
+  @if (enChargement()) {
+    <p>Chargement...</p>
+  } @else if (responsables().length === 0) {
+    <p>Aucun responsable enregistre pour le moment.</p>
+  } @else {
+    <table class="tableau">
+      <thead>
+        <tr>
+          <th>Nom</th>
+          <th>Prenom</th>
+          <th>Contact</th>
+          <th>Comites geres</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (responsable of responsables(); track responsable.id) {
+          <tr>
+            <td>{{ responsable.nom }}</td>
+            <td>{{ responsable.prenom }}</td>
+            <td>{{ responsable.contact || '-' }}</td>
+            <td>{{ responsable.nombreComitesGeres }}</td>
+            <td class="actions">
+              @if (peutGerer()) {
+                <a [routerLink]="['/comite/responsables', responsable.id, 'modifier']">Modifier</a>
+              }
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  }
+</div>

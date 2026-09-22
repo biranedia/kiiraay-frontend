@@ -1,7 +1,9 @@
 <div class="page">
   <div class="page-header">
     <h1>Arrondissements</h1>
-    <a routerLink="/territorial/arrondissements/nouveau" class="bouton-primaire">+ Nouvel arrondissement</a>
+    @if (peutGerer()) {
+      <a routerLink="/territorial/arrondissements/nouveau" class="bouton-primaire">+ Nouvel arrondissement</a>
+    }
   </div>
 
   @if (messageErreur()) {
@@ -31,8 +33,10 @@
             <td>{{ item.communeVilleNom }}</td>
             <td>{{ item.nombreLocalites }}</td>
             <td class="actions">
-              <a [routerLink]="['/territorial/arrondissements', item.id, 'modifier']">Modifier</a>
-              <button type="button" (click)="supprimer(item)">Supprimer</button>
+              @if (peutGerer()) {
+                <a [routerLink]="['/territorial/arrondissements', item.id, 'modifier']">Modifier</a>
+                <button type="button" (click)="supprimer(item)">Supprimer</button>
+              }
             </td>
           </tr>
         }

@@ -2,6 +2,7 @@ import { Component, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { Region } from '../../../core/models/region.model';
 import { RegionService } from '../services/region.service';
+import { AuthService } from '../../../core/services/auth.service';
 
 @Component({
   selector: 'app-region-list',
@@ -12,6 +13,7 @@ import { RegionService } from '../services/region.service';
 })
 export class RegionListComponent {
   private readonly regionService = inject(RegionService);
+  private readonly authService = inject(AuthService);
 
   readonly regions = signal<Region[]>([]);
   readonly enChargement = signal<boolean>(true);
@@ -19,6 +21,10 @@ export class RegionListComponent {
 
   constructor() {
     this.chargerRegions();
+  }
+
+  peutGerer(): boolean {
+    return this.authService.possede('TERRITOIRE_GERER');
   }
 
   chargerRegions(): void {

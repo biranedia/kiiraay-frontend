@@ -1,0 +1,36 @@
+<div class="page">
+  <h1>{{ modeEdition ? 'Modifier le mouvement' : 'Nouveau mouvement' }}</h1>
+
+  @if (messageErreur()) {
+    <p class="message-erreur">{{ messageErreur() }}</p>
+  }
+
+  <form [formGroup]="formulaire" (ngSubmit)="enregistrer()" class="formulaire">
+    <label for="categorie">Categorie</label>
+    <select id="categorie" formControlName="categorie">
+      <option [ngValue]="null" disabled>Choisir une categorie</option>
+      @for (categorie of categories; track categorie.valeur) {
+        <option [ngValue]="categorie.valeur">{{ categorie.libelle }}</option>
+      }
+    </select>
+
+    <label for="responsable">Responsable (optionnel)</label>
+    <input id="responsable" type="text" formControlName="responsable" />
+
+    <label for="contact">Contact (optionnel)</label>
+    <input id="contact" type="text" formControlName="contact" />
+
+    <label for="effectif">Effectif</label>
+    <input id="effectif" type="number" formControlName="effectif" min="0" />
+
+    <label for="observations">Observations (optionnel)</label>
+    <textarea id="observations" formControlName="observations" rows="3"></textarea>
+
+    <div class="boutons">
+      <button type="button" class="bouton-secondaire" (click)="annuler()">Annuler</button>
+      <button type="submit" class="bouton-primaire" [disabled]="enCours()">
+        {{ enCours() ? 'Enregistrement...' : 'Enregistrer' }}
+      </button>
+    </div>
+  </form>
+</div>

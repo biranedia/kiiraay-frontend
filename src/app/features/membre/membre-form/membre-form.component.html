@@ -1,0 +1,160 @@
+<div class="page">
+  <h1>{{ modeEdition ? 'Modifier le membre' : 'Nouveau membre' }}</h1>
+
+  @if (messageErreur()) {
+    <p class="message-erreur">{{ messageErreur() }}</p>
+  }
+
+  @if (alertesDoublon().length > 0) {
+    <div class="alerte-doublon">
+      @for (alerte of alertesDoublon(); track alerte) {
+        <p>{{ alerte }}</p>
+      }
+    </div>
+  }
+
+  <form [formGroup]="formulaire" (ngSubmit)="enregistrer()" class="formulaire">
+    <label for="nom">Nom</label>
+    <input id="nom" type="text" formControlName="nom" />
+
+    <label for="prenom">Prenom</label>
+    <input id="prenom" type="text" formControlName="prenom" />
+
+    <label for="dateNaissance">Date de naissance</label>
+    <input id="dateNaissance" type="date" formControlName="dateNaissance" />
+
+    <label for="lieuNaissance">Lieu de naissance</label>
+    <input id="lieuNaissance" type="text" formControlName="lieuNaissance" />
+
+    <label for="sexe">Sexe</label>
+    <select id="sexe" formControlName="sexe">
+      <option value="M">Masculin</option>
+      <option value="F">Feminin</option>
+    </select>
+
+    <label for="telephone">Telephone</label>
+    <input id="telephone" type="tel" formControlName="telephone" />
+
+    <label for="email">Email</label>
+    <input id="email" type="email" formControlName="email" />
+
+    <label for="adresse">Adresse</label>
+    <input id="adresse" type="text" formControlName="adresse" />
+
+    <label for="comiteId">Comite</label>
+    <select id="comiteId" formControlName="comiteId">
+      <option [ngValue]="null" disabled>Choisir un comite</option>
+      @for (comite of comites(); track comite.id) {
+        <option [ngValue]="comite.id">{{ comite.code }}</option>
+      }
+    </select>
+
+    <fieldset class="bloc-cni">
+      <legend>Piece d'identite</legend>
+
+      <label for="numeroCNI">Numero CNI</label>
+      <input id="numeroCNI" type="text" formControlName="numeroCNI" />
+
+      <label for="dateDelivranceCNI">Date de delivrance</label>
+      <input id="dateDelivranceCNI" type="date" formControlName="dateDelivranceCNI" />
+
+      <label for="dateExpirationCNI">Date d'expiration</label>
+      <input id="dateExpirationCNI" type="date" formControlName="dateExpirationCNI" />
+
+      <label for="lieuDelivranceCNI">Lieu de delivrance</label>
+      <input id="lieuDelivranceCNI" type="text" formControlName="lieuDelivranceCNI" />
+
+      <label for="numeroCarteElecteur">Numero carte d'electeur</label>
+      <input id="numeroCarteElecteur" type="text" formControlName="numeroCarteElecteur" />
+    </fieldset>
+
+    <div class="boutons">
+      <button type="button" class="bouton-secondaire" (click)="annuler()">Annuler</button>
+      <button type="submit" class="bouton-primaire" [disabled]="enCours()">
+        {{ enCours() ? 'Enregistrement...' : 'Enregistrer' }}
+      </button>
+    </div>
+  </form>
+
+  @if (modeEdition) {
+    <fieldset class="bloc-cni bloc-photos">
+      <legend>Photos de la CNI</legend>
+
+      <p class="note-photos">
+        La validation d'un membre est bloquee tant que les deux photos (recto et verso) de
+        la CNI ne sont pas fournies : elles permettent de verifier que la piece declaree est
+        authentique.
+      </p>
+
+      @if (messagePhotos()) {
+        <p class="message-photos">{{ messagePhotos() }}</p>
+      }
+
+      <div class="ligne-photo">
+        <div class="champ-photo">
+          <label for="photoRecto">
+            Recto {{ photoRectoPresente() ? '(deja televerse)' : '(manquant)' }}
+          </label>
+          <input id="photoRecto" type="file" accept="image/jpeg,image/png,image/webp" (change)="surChangementRecto($event)" />
+          @if (chargementApercuRecto()) {
+            <p class="chargement-apercu">Chargement de l'apercu...</p>
+          }
+          @if (apercuRecto()) {
+            <img [src]="apercuRecto()" alt="Apercu recto de la CNI" class="apercu-photo" />
+          }
+        </div>
+
+        <div class="champ-photo">
+          <label for="photoVerso">
+            Verso {{ photoVersoPresente() ? '(deja televerse)' : '(manquant)' }}
+          </label>
+          <input id="photoVerso" type="file" accept="image/jpeg,image/png,image/webp" (change)="surChangementVerso($event)" />
+          @if (chargementApercuVerso()) {
+            <p class="chargement-apercu">Chargement de l'apercu...</p>
+          }
+          @if (apercuVerso()) {
+            <img [src]="apercuVerso()" alt="Apercu verso de la CNI" class="apercu-photo" />
+          }
+        </div>
+      </div>
+
+      <div class="boutons">
+        <button type="button" class="bouton-primaire" [disabled]="enUploadPhotos()" (click)="televerserPhotos()">
+          {{ enUploadPhotos() ? 'Envoi...' : 'Televerser' }}
+        </button>
+      </div>
+    </fieldset>
+
+    <fieldset class="bloc-cni bloc-photos">
+      <legend>Photo de profil</legend>
+
+      <p class="note-photos">
+        Un portrait du membre, pour un affichage plus professionnel dans les listes et
+        fiches. Facultatif et sans lien avec le controle d'identite.
+      </p>
+
+      @if (messagePhotoProfil()) {
+        <p class="message-photos">{{ messagePhotoProfil() }}</p>
+      }
+
+      <div class="champ-photo">
+        <label for="photoProfil">
+          Portrait {{ photoProfilPresente() ? '(deja televerse)' : '(manquant)' }}
+        </label>
+        <input id="photoProfil" type="file" accept="image/jpeg,image/png,image/webp" (change)="surChangementPhotoProfil($event)" />
+        @if (chargementApercuProfil()) {
+          <p class="chargement-apercu">Chargement de l'apercu...</p>
+        }
+        @if (apercuProfil()) {
+          <img [src]="apercuProfil()" alt="Apercu de la photo de profil" class="apercu-photo apercu-profil" />
+        }
+      </div>
+
+      <div class="boutons">
+        <button type="button" class="bouton-primaire" [disabled]="enUploadPhotoProfil()" (click)="televerserPhotoProfil()">
+          {{ enUploadPhotoProfil() ? 'Envoi...' : 'Televerser' }}
+        </button>
+      </div>
+    </fieldset>
+  }
+</div>

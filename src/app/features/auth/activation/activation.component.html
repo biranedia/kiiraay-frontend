@@ -1,0 +1,37 @@
+<div class="page-activation">
+  <div class="carte-activation">
+    <h1>KIIRAAY</h1>
+
+    @if (enVerification()) {
+      <p class="info">Verification du lien d'activation...</p>
+    } @else if (lienInvalide()) {
+      <p class="sous-titre">Activation impossible</p>
+      <p class="erreur">{{ lienInvalide() }}</p>
+      <p class="info">Contactez votre administrateur pour obtenir un nouveau lien.</p>
+      <button type="button" (click)="allerVersConnexion()">Retour a la connexion</button>
+    } @else if (succes()) {
+      <p class="sous-titre">Compte active</p>
+      <p class="info">Votre mot de passe a ete defini avec succes. Vous pouvez maintenant vous connecter.</p>
+      <button type="button" (click)="allerVersConnexion()">Se connecter</button>
+    } @else {
+      <p class="sous-titre">Bienvenue{{ prenom() ? ', ' + prenom() : '' }}</p>
+      <p class="info">Choisissez votre mot de passe pour activer votre compte.</p>
+
+      <form [formGroup]="formulaire" (ngSubmit)="soumettre()">
+        <label for="motDePasse">Mot de passe (10 caracteres minimum)</label>
+        <input id="motDePasse" type="password" formControlName="motDePasse" autocomplete="new-password" />
+
+        <label for="confirmation">Confirmer le mot de passe</label>
+        <input id="confirmation" type="password" formControlName="confirmation" autocomplete="new-password" />
+
+        @if (messageErreur()) {
+          <p class="erreur">{{ messageErreur() }}</p>
+        }
+
+        <button type="submit" [disabled]="enCours()">
+          {{ enCours() ? 'Activation...' : 'Activer mon compte' }}
+        </button>
+      </form>
+    }
+  </div>
+</div>

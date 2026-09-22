@@ -2,6 +2,7 @@ import { Component, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { Cellule } from '../../../core/models/cellule.model';
 import { CelluleService } from '../services/cellule.service';
+import { AuthService } from '../../../core/services/auth.service';
 
 @Component({
   selector: 'app-cellule-list',
@@ -12,6 +13,7 @@ import { CelluleService } from '../services/cellule.service';
 })
 export class CelluleListComponent {
   private readonly celluleService = inject(CelluleService);
+  private readonly authService = inject(AuthService);
 
   readonly cellules = signal<Cellule[]>([]);
   readonly enChargement = signal(true);
@@ -37,16 +39,28 @@ export class CelluleListComponent {
     });
   }
 
+  // Droit general de gestion des cellules (creer/modifier/soumettre/supprimer)
+  peutGerer(): boolean {
+    return this.authService.possede('CELLULE_GERER');
+  }
+
+  // Droit specifique de validation (distinct de la gestion : un RESPONSABLE_CELLULE
+  // peut gerer ses cellules mais ne doit pas pouvoir les valider lui-meme)
+  peutValider(): boolean {
+    return this.authService.possede('CELLULE_VALIDER');
+  }
+
   peutSoumettre(cellule: Cellule): boolean {
-    return cellule.statut === 'BROUILLON' || cellule.statut === 'EN_CONSTITUTION';
+    return this.peutGerer() && (cellule.statut === 'BROUILLON' || cellule.statut === 'EN_CONSTITUTION');
   }
 
   peutValiderOuRejeter(cellule: Cellule): boolean {
-    return cellule.statut === 'EN_ATTENTE';
+    return this.peutValider() && cellule.statut === 'EN_ATTENTE';
   }
 
   peutModifier(cellule: Cellule): boolean {
-    return cellule.statut !== 'VALIDEE' && cellule.statut !== 'SUSPENDUE' && cellule.statut !== 'INACTIVE';
+    return this.peutGerer()
+      && cellule.statut !== 'VALIDEE' && cellule.statut !== 'SUSPENDUE' && cellule.statut !== 'INACTIVE';
   }
 
   soumettre(cellule: Cellule): void {

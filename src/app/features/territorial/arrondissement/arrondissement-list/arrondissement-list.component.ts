@@ -2,6 +2,7 @@ import { Component, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { Arrondissement } from '../../../../core/models/territorial.model';
 import { ArrondissementService } from '../services/arrondissement.service';
+import { AuthService } from '../../../../core/services/auth.service';
 
 @Component({
   selector: 'app-arrondissement-list',
@@ -12,6 +13,7 @@ import { ArrondissementService } from '../services/arrondissement.service';
 })
 export class ArrondissementListComponent {
   private readonly arrondissementService = inject(ArrondissementService);
+  private readonly authService = inject(AuthService);
 
   readonly arrondissements = signal<Arrondissement[]>([]);
   readonly enChargement = signal(true);
@@ -19,6 +21,10 @@ export class ArrondissementListComponent {
 
   constructor() {
     this.charger();
+  }
+
+  peutGerer(): boolean {
+    return this.authService.possede('TERRITOIRE_GERER');
   }
 
   charger(): void {

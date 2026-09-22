@@ -1,0 +1,70 @@
+<div class="page">
+  <div class="page-header">
+    <h1>Membres</h1>
+    @if (peutGerer()) {
+      <a routerLink="/membre/membres/nouveau" class="bouton-primaire">+ Nouveau membre</a>
+    }
+  </div>
+
+  @if (messageErreur()) {
+    <p class="message-erreur">{{ messageErreur() }}</p>
+  }
+
+  @if (enChargement()) {
+    <p>Chargement...</p>
+  } @else if (membres().length === 0) {
+    <p>Aucun membre enregistre pour le moment.</p>
+  } @else {
+    <table class="tableau">
+      <thead>
+        <tr>
+          <th>Identifiant</th>
+          <th>Nom</th>
+          <th>Prenom</th>
+          <th>Comite</th>
+          <th>CNI</th>
+          <th>Statut</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (membre of membres(); track membre.id) {
+          <tr>
+            <td>{{ membre.identifiantUnique }}</td>
+            <td>{{ membre.nom }}</td>
+            <td>{{ membre.prenom }}</td>
+            <td>{{ membre.comiteCode }}</td>
+            <td>{{ membre.numeroCNI ?? '—' }}</td>
+            <td>
+              <span class="badge" [class]="'badge-' + membre.statut.toLowerCase()">{{ membre.statut }}</span>
+              @if (membre.doublonPotentielDetecte) {
+                <span class="alerte-texte">Doublon potentiel</span>
+              }
+            </td>
+            <td class="actions">
+              @if (peutModifier(membre)) {
+                <a [routerLink]="['/membre/membres', membre.id, 'modifier']">Modifier</a>
+              }
+              @if (peutSoumettre(membre)) {
+                <button type="button" (click)="soumettre(membre)" [disabled]="enAction() === membre.id">Soumettre</button>
+              }
+              @if (peutValiderOuRejeter(membre)) {
+                @if (photosManquantes(membre)) {
+                  <span class="alerte-texte" title="Televersez les photos recto et verso de la piece d'identite avant de valider">
+                    Photos requises
+                  </span>
+                } @else {
+                  <button type="button" (click)="valider(membre)" [disabled]="enAction() === membre.id">Valider</button>
+                }
+                <button type="button" class="lien-danger" (click)="rejeter(membre)" [disabled]="enAction() === membre.id">Rejeter</button>
+              }
+              @if (peutGerer()) {
+                <button type="button" class="lien-danger" (click)="supprimer(membre)">Supprimer</button>
+              }
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  }
+</div>

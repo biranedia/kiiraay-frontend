@@ -1,0 +1,44 @@
+<div class="page">
+  <h1>{{ modeEdition ? 'Modifier le comite' : 'Nouveau comite' }}</h1>
+
+  @if (messageErreur()) {
+    <p class="message-erreur">{{ messageErreur() }}</p>
+  }
+
+  <form [formGroup]="formulaire" (ngSubmit)="enregistrer()" class="formulaire">
+    <label for="code">Code</label>
+    <input id="code" type="text" formControlName="code" placeholder="Ex : COM-001" />
+
+    <label for="capaciteCible">Capacite cible</label>
+    <input id="capaciteCible" type="number" formControlName="capaciteCible" />
+
+    <label for="seuilAlerte">Seuil d'alerte</label>
+    <input id="seuilAlerte" type="number" formControlName="seuilAlerte" />
+
+    <label for="celluleId">Cellule</label>
+    <select id="celluleId" formControlName="celluleId">
+      <option [ngValue]="null" disabled>Choisir une cellule</option>
+      @for (cellule of cellules(); track cellule.id) {
+        <option [ngValue]="cellule.id">{{ cellule.nom }}</option>
+      }
+    </select>
+
+    <label for="responsableId">Responsable</label>
+    <select id="responsableId" formControlName="responsableId">
+      <option [ngValue]="null" disabled>Choisir un responsable</option>
+      @for (responsable of responsables(); track responsable.id) {
+        <option [ngValue]="responsable.id">{{ responsable.prenom }} {{ responsable.nom }}</option>
+      }
+    </select>
+    @if (responsables().length === 0) {
+      <p class="astuce">Aucun responsable disponible — cree d'abord un responsable.</p>
+    }
+
+    <div class="boutons">
+      <button type="button" class="bouton-secondaire" (click)="annuler()">Annuler</button>
+      <button type="submit" class="bouton-primaire" [disabled]="enCours()">
+        {{ enCours() ? 'Enregistrement...' : 'Enregistrer' }}
+      </button>
+    </div>
+  </form>
+</div>

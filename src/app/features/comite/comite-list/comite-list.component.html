@@ -1,0 +1,56 @@
+<div class="page">
+  <div class="page-header">
+    <h1>Comites</h1>
+    @if (peutGerer()) {
+      <a routerLink="/comite/comites/nouveau" class="bouton-primaire">+ Nouveau comite</a>
+    }
+  </div>
+
+  @if (messageErreur()) {
+    <p class="message-erreur">{{ messageErreur() }}</p>
+  }
+
+  @if (enChargement()) {
+    <p>Chargement...</p>
+  } @else if (comites().length === 0) {
+    <p>Aucun comite enregistre pour le moment.</p>
+  } @else {
+    <table class="tableau">
+      <thead>
+        <tr>
+          <th>Code</th>
+          <th>Cellule</th>
+          <th>Responsable</th>
+          <th>Statut</th>
+          <th>Remplissage</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (comite of comites(); track comite.id) {
+          <tr>
+            <td>{{ comite.code }}</td>
+            <td>{{ comite.celluleNom }}</td>
+            <td>{{ comite.responsableNomComplet }}</td>
+            <td><span class="badge" [class]="'badge-' + comite.statut.toLowerCase()">{{ comite.statut }}</span></td>
+            <td class="remplissage">
+              <div class="barre">
+                <div class="barre-remplie" [class.alerte]="comite.alerteSeuilAtteint" [style.width.%]="comite.pourcentageRemplissage"></div>
+              </div>
+              <span class="detail">{{ comite.nombreMembresInscrits }} / {{ comite.capaciteCible }} ({{ comite.pourcentageRemplissage }}%)</span>
+              @if (comite.alerteSeuilAtteint) {
+                <span class="alerte-texte">Seuil d'alerte atteint</span>
+              }
+            </td>
+            <td class="actions">
+              @if (peutGerer()) {
+                <a [routerLink]="['/comite/comites', comite.id, 'modifier']">Modifier</a>
+                <button type="button" class="lien-danger" (click)="supprimer(comite)">Supprimer</button>
+              }
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  }
+</div>

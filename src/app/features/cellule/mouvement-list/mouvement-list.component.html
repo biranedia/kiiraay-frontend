@@ -1,0 +1,56 @@
+<div class="page">
+  <div class="page-header">
+    <h1>Mouvements de la cellule</h1>
+    <div class="entete-actions">
+      @if (peutGerer()) {
+        <a [routerLink]="['/cellule/cellules', celluleId, 'mouvements', 'nouveau']" class="bouton-primaire">+ Nouveau mouvement</a>
+      }
+      <a routerLink="/cellule/cellules">Retour aux cellules</a>
+    </div>
+  </div>
+
+  @if (messageErreur()) {
+    <p class="message-erreur">{{ messageErreur() }}</p>
+  }
+
+  @if (enChargement()) {
+    <p>Chargement...</p>
+  } @else if (mouvements().length === 0) {
+    <p>Aucun mouvement enregistre pour cette cellule.</p>
+  } @else {
+    <table class="tableau">
+      <thead>
+        <tr>
+          <th>Categorie</th>
+          <th>Responsable</th>
+          <th>Contact</th>
+          <th>Effectif</th>
+          <th>Cree le</th>
+          <th>Statut</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (mouvement of mouvements(); track mouvement.id) {
+          <tr>
+            <td>{{ mouvement.categorie }}</td>
+            <td>{{ mouvement.responsable || '-' }}</td>
+            <td>{{ mouvement.contact || '-' }}</td>
+            <td>{{ mouvement.effectif }}</td>
+            <td>{{ mouvement.dateCreation }}</td>
+            <td><span class="badge" [class]="'badge-' + mouvement.statut">{{ mouvement.statut }}</span></td>
+            <td class="actions">
+              @if (peutGerer()) {
+                <a [routerLink]="['/cellule/cellules', celluleId, 'mouvements', mouvement.id, 'modifier']">Modifier</a>
+                @if (mouvement.statut === 'actif') {
+                  <button type="button" (click)="cloturer(mouvement)" [disabled]="enAction() === mouvement.id">Cloturer</button>
+                }
+                <button type="button" class="lien-danger" (click)="supprimer(mouvement)">Supprimer</button>
+              }
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  }
+</div>

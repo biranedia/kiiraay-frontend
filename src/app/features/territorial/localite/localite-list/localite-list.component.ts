@@ -2,6 +2,7 @@ import { Component, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { Localite } from '../../../../core/models/territorial.model';
 import { LocaliteService } from '../services/localite.service';
+import { AuthService } from '../../../../core/services/auth.service';
 
 @Component({
   selector: 'app-localite-list',
@@ -12,6 +13,7 @@ import { LocaliteService } from '../services/localite.service';
 })
 export class LocaliteListComponent {
   private readonly localiteService = inject(LocaliteService);
+  private readonly authService = inject(AuthService);
 
   readonly localites = signal<Localite[]>([]);
   readonly enChargement = signal(true);
@@ -19,6 +21,10 @@ export class LocaliteListComponent {
 
   constructor() {
     this.charger();
+  }
+
+  peutGerer(): boolean {
+    return this.authService.possede('TERRITOIRE_GERER');
   }
 
   charger(): void {

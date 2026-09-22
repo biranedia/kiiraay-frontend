@@ -2,6 +2,7 @@ import { Component, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { CommuneVille } from '../../../../core/models/territorial.model';
 import { CommuneVilleService } from '../services/commune-ville.service';
+import { AuthService } from '../../../../core/services/auth.service';
 
 @Component({
   selector: 'app-commune-ville-list',
@@ -12,6 +13,7 @@ import { CommuneVilleService } from '../services/commune-ville.service';
 })
 export class CommuneVilleListComponent {
   private readonly communeVilleService = inject(CommuneVilleService);
+  private readonly authService = inject(AuthService);
 
   readonly communesVilles = signal<CommuneVille[]>([]);
   readonly enChargement = signal(true);
@@ -19,6 +21,10 @@ export class CommuneVilleListComponent {
 
   constructor() {
     this.charger();
+  }
+
+  peutGerer(): boolean {
+    return this.authService.possede('TERRITOIRE_GERER');
   }
 
   charger(): void {

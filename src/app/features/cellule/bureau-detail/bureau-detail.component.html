@@ -1,0 +1,78 @@
+<div class="page">
+  <div class="page-header">
+    <h1>Bureau de la cellule</h1>
+    <a routerLink="/cellule/cellules">Retour aux cellules</a>
+  </div>
+
+  @if (messageErreur()) {
+    <p class="message-erreur">{{ messageErreur() }}</p>
+  }
+
+  @if (enChargement()) {
+    <p>Chargement...</p>
+  } @else if (bureau()) {
+    <p class="sous-titre">Cellule : <strong>{{ bureau()!.celluleCode }}</strong> — statut du bureau : {{ bureau()!.statut }}</p>
+
+    <table class="tableau">
+      <thead>
+        <tr>
+          <th>Fonction</th>
+          <th>Titulaire</th>
+          <th>Contact</th>
+          <th>Nomme le</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (fonctionRef of fonctionsRef; track fonctionRef.valeur) {
+          <tr>
+            <td>{{ fonctionRef.libelle }}</td>
+            @if (titulaireActif(fonctionRef.valeur); as titulaire) {
+              <td>{{ titulaire.prenom }} {{ titulaire.nom }}</td>
+              <td>{{ titulaire.contact || '-' }}</td>
+              <td>{{ titulaire.dateNomination || '-' }}</td>
+              <td class="actions">
+                @if (peutGerer()) {
+                  <button type="button" class="lien-danger" (click)="revoquer(titulaire)" [disabled]="fonctionEnCoursId() === titulaire.id">Revoquer</button>
+                }
+              </td>
+            } @else {
+              <td class="vacant">Poste vacant</td>
+              <td>-</td>
+              <td>-</td>
+              <td class="actions">
+                @if (peutGerer()) {
+                  <button type="button" (click)="ouvrirNomination(fonctionRef.valeur)">Nommer</button>
+                }
+              </td>
+            }
+          </tr>
+        }
+      </tbody>
+    </table>
+
+    @if (fonctionEnEdition()) {
+      <div class="panneau-nomination">
+        <h2>Nommer un titulaire</h2>
+        <form [formGroup]="formulaire" (ngSubmit)="nommer()" class="formulaire">
+          <label for="nom">Nom</label>
+          <input id="nom" type="text" formControlName="nom" />
+
+          <label for="prenom">Prenom</label>
+          <input id="prenom" type="text" formControlName="prenom" />
+
+          <label for="contact">Contact (optionnel)</label>
+          <input id="contact" type="text" formControlName="contact" />
+
+          <label for="identifiantMembre">Identifiant membre (optionnel)</label>
+          <input id="identifiantMembre" type="text" formControlName="identifiantMembre" />
+
+          <div class="boutons">
+            <button type="button" class="bouton-secondaire" (click)="annulerNomination()">Annuler</button>
+            <button type="submit" class="bouton-primaire">Nommer</button>
+          </div>
+        </form>
+      </div>
+    }
+  }
+</div>
