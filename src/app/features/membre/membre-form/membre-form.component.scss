@@ -15,21 +15,75 @@
 }
 
 .bloc-cni {
-  // A l'interieur d'un fieldset, label/input ne recoivent pas le flex-direction:column du
-  // .formulaire parent (ce ne sont pas ses enfants directs) : sans cette regle, ils restaient
-  // en flux inline (comportement par defaut de <label>/<input>) et s'entassaient les uns a
-  // cote des autres au lieu de s'empiler proprement, un par ligne.
-  display: flex;
-  flex-direction: column;
   margin-top: 18px;
   border: 1px solid var(--couleur-bordure);
   border-radius: 8px;
-  padding: 12px 14px 6px;
+  padding: 14px 16px 6px;
 
   legend {
     font-weight: 600;
     padding: 0 6px;
     color: var(--couleur-primaire);
+  }
+
+  // Chaque champ (label + input, + eventuel message d'erreur) forme sa propre colonne : on
+  // ne compte plus sur le flex-direction:column du .formulaire parent (herite pas dans un
+  // fieldset imbrique) ni sur le flux inline par defaut de <label>/<input>, qui entassait
+  // et coupait le contenu (cf. capture d'ecran : "Date d'expiration" colle contre le champ
+  // precedent). min-width: 0 empeche un input de forcer sa colonne a s'agrandir au-dela de
+  // l'espace disponible et de faire deborder la grille.
+  .champ-cni {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+  }
+
+  .champ-cni--pleine-largeur {
+    width: 100%;
+  }
+
+  // Deux champs par ligne (delivrance/expiration, lieu/carte electeur) : plus lisible qu'un
+  // long empilement vertical, tout en gardant chaque champ pleinement visible.
+  .grille-cni {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0 16px;
+  }
+
+  label {
+    font-weight: 600;
+    margin-bottom: 6px;
+    font-size: 0.86rem;
+    color: var(--couleur-texte);
+  }
+
+  input {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 10px 13px;
+    border: 1px solid var(--couleur-bordure);
+    border-radius: 8px;
+    margin-bottom: 18px;
+    font-size: 0.94rem;
+    font-family: inherit;
+    background: #fbfbfd;
+    color: var(--couleur-texte);
+    transition: border-color 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+
+    &:focus {
+      outline: none;
+      border-color: var(--couleur-accent);
+      background: #fff;
+      box-shadow: 0 0 0 3px rgba(31, 122, 140, 0.15);
+    }
+  }
+
+  // Sous 480px (petit mobile), une grille a deux colonnes serrerait trop les dates/champs :
+  // on repasse a une seule colonne pour que rien ne soit coupe.
+  @media (max-width: 480px) {
+    .grille-cni {
+      grid-template-columns: 1fr;
+    }
   }
 }
 

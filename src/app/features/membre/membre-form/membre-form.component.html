@@ -55,26 +55,40 @@
     <fieldset class="bloc-cni">
       <legend>Piece d'identite</legend>
 
-      <label for="numeroCNI">Numero CNI</label>
-      <input id="numeroCNI" type="text" formControlName="numeroCNI" />
+      <div class="champ-cni champ-cni--pleine-largeur">
+        <label for="numeroCNI">Numero CNI</label>
+        <input id="numeroCNI" type="text" formControlName="numeroCNI" />
+      </div>
 
-      <label for="dateDelivranceCNI">Date de delivrance</label>
-      <input id="dateDelivranceCNI" type="date" formControlName="dateDelivranceCNI" [attr.max]="dateMaximale" />
-      @if (formulaire.controls.dateDelivranceCNI.touched && formulaire.controls.dateDelivranceCNI.hasError('dateFuture')) {
-        <p class="erreur-champ">La date de delivrance ne peut pas etre dans le futur.</p>
-      }
+      <div class="grille-cni">
+        <div class="champ-cni">
+          <label for="dateDelivranceCNI">Date de delivrance</label>
+          <input id="dateDelivranceCNI" type="date" formControlName="dateDelivranceCNI" [attr.max]="dateMaximale" />
+          @if (formulaire.controls.dateDelivranceCNI.touched && formulaire.controls.dateDelivranceCNI.hasError('dateFuture')) {
+            <p class="erreur-champ">La date de delivrance ne peut pas etre dans le futur.</p>
+          }
+        </div>
 
-      <label for="dateExpirationCNI">Date d'expiration</label>
-      <input id="dateExpirationCNI" type="date" formControlName="dateExpirationCNI" />
-      @if (formulaire.hasError('expirationAvantDelivrance') && formulaire.controls.dateExpirationCNI.touched) {
-        <p class="erreur-champ">La date d'expiration doit etre posterieure a la date de delivrance.</p>
-      }
+        <div class="champ-cni">
+          <label for="dateExpirationCNI">Date d'expiration</label>
+          <input id="dateExpirationCNI" type="date" formControlName="dateExpirationCNI" />
+          @if (formulaire.hasError('expirationAvantDelivrance') && formulaire.controls.dateExpirationCNI.touched) {
+            <p class="erreur-champ">La date d'expiration doit etre posterieure a la date de delivrance.</p>
+          }
+        </div>
+      </div>
 
-      <label for="lieuDelivranceCNI">Lieu de delivrance</label>
-      <input id="lieuDelivranceCNI" type="text" formControlName="lieuDelivranceCNI" />
+      <div class="grille-cni">
+        <div class="champ-cni">
+          <label for="lieuDelivranceCNI">Lieu de delivrance</label>
+          <input id="lieuDelivranceCNI" type="text" formControlName="lieuDelivranceCNI" />
+        </div>
 
-      <label for="numeroCarteElecteur">Numero carte d'electeur</label>
-      <input id="numeroCarteElecteur" type="text" formControlName="numeroCarteElecteur" />
+        <div class="champ-cni">
+          <label for="numeroCarteElecteur">Numero carte d'electeur</label>
+          <input id="numeroCarteElecteur" type="text" formControlName="numeroCarteElecteur" />
+        </div>
+      </div>
     </fieldset>
 
     <div class="boutons">
