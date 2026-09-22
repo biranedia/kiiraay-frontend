@@ -15,6 +15,12 @@
 }
 
 .bloc-cni {
+  // A l'interieur d'un fieldset, label/input ne recoivent pas le flex-direction:column du
+  // .formulaire parent (ce ne sont pas ses enfants directs) : sans cette regle, ils restaient
+  // en flux inline (comportement par defaut de <label>/<input>) et s'entassaient les uns a
+  // cote des autres au lieu de s'empiler proprement, un par ligne.
+  display: flex;
+  flex-direction: column;
   margin-top: 18px;
   border: 1px solid var(--couleur-bordure);
   border-radius: 8px;
