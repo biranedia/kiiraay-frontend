@@ -20,3 +20,17 @@ export interface StatistiquesDepartementales {
   nombreMouvements: number;
   mouvementsActifs: number;
 }
+
+export interface StatistiquesCommune {
+  id: number;
+  nom: string;
+  type: string;
+  code: string;
+  nombreLocalites: number;
+  nombreCellules: number;
+  nombreComites: number;
+  comitesComplets: number;
+  comitesIncomplets: number;
+  tauxRemplissageMoyen: number;
+  nombreMembres: number;
+}

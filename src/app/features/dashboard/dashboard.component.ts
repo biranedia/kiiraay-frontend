@@ -2,7 +2,7 @@ import { Component, computed, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { AuthService } from '../../core/services/auth.service';
 import { StatistiquesService } from '../../core/services/statistiques.service';
-import { StatistiquesDepartementales } from '../../core/models/statistiques.model';
+import { StatistiquesCommune, StatistiquesDepartementales } from '../../core/models/statistiques.model';
 import { AppShellComponent } from '../../core/layout/app-shell/app-shell.component';
 
 // Libelles et regroupement lisibles pour chaque permission technique (code) : evite d'afficher
@@ -200,6 +200,52 @@ const ICONES: Record<string, string> = {
               </div>
             </div>
           </div>
+
+          <div class="carte-tableau">
+            <div class="entete-tableau">
+              <h3>Vue par commune / ville</h3>
+              @if (chargementCommunes()) {
+                <span class="chargement-inline">Chargement...</span>
+              }
+            </div>
+            @if (erreurCommunes()) {
+              <p class="erreur-stats">{{ erreurCommunes() }}</p>
+            } @else if (!chargementCommunes() && communes().length === 0) {
+              <p class="aucune-donnee">Aucune commune enregistree.</p>
+            } @else if (communes().length > 0) {
+              <div class="tableau-scroll">
+                <table class="tableau-communes">
+                  <thead>
+                    <tr>
+                      <th>Commune / ville</th>
+                      <th>Localites</th>
+                      <th>Cellules</th>
+                      <th>Comites</th>
+                      <th>Remplissage moyen</th>
+                      <th>Membres</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    @for (c of communes(); track c.id) {
+                      <tr>
+                        <td>{{ c.nom }}</td>
+                        <td>{{ c.nombreLocalites }}</td>
+                        <td>{{ c.nombreCellules }}</td>
+                        <td>
+                          {{ c.nombreComites }}
+                          @if (c.nombreComites > 0) {
+                            <span class="detail-comites">({{ c.comitesComplets }} complet{{ c.comitesComplets > 1 ? 's' : '' }})</span>
+                          }
+                        </td>
+                        <td>{{ c.tauxRemplissageMoyen }}%</td>
+                        <td>{{ c.nombreMembres }}</td>
+                      </tr>
+                    }
+                  </tbody>
+                </table>
+              </div>
+            }
+          </div>
         }
       }
 
@@ -385,6 +431,40 @@ const ICONES: Record<string, string> = {
       box-shadow: 0 4px 10px rgba(16, 24, 40, 0.08);
       transform: translateY(-1px);
     }
+
+    .carte-tableau {
+      background: #fff;
+      border: 1px solid #e3e7ee;
+      border-radius: 12px;
+      padding: 18px 20px;
+      box-shadow: 0 1px 2px rgba(16, 24, 40, 0.04), 0 1px 3px rgba(16, 24, 40, 0.06);
+      margin-bottom: 32px;
+    }
+    .entete-tableau { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 14px; }
+    .entete-tableau h3 { margin: 0; font-size: 0.92rem; font-weight: 700; color: #16233f; }
+    .chargement-inline { font-size: 0.78rem; color: #6b7280; }
+    .tableau-scroll { overflow-x: auto; }
+    .tableau-communes { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+    .tableau-communes th {
+      text-align: left;
+      padding: 8px 12px;
+      color: #6b7280;
+      font-weight: 600;
+      font-size: 0.74rem;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      border-bottom: 1px solid #e3e7ee;
+      white-space: nowrap;
+    }
+    .tableau-communes td {
+      padding: 10px 12px;
+      border-bottom: 1px solid #f0f2f6;
+      color: #16233f;
+      white-space: nowrap;
+    }
+    .tableau-communes tbody tr:last-child td { border-bottom: none; }
+    .tableau-communes tbody tr:hover { background: #f8fafc; }
+    .detail-comites { color: #6b7280; font-size: 0.78rem; margin-left: 4px; }
   `]
 })
 export class DashboardComponent {
@@ -396,9 +476,14 @@ export class DashboardComponent {
   protected readonly chargementStats = signal(false);
   protected readonly erreurStats = signal<string | null>(null);
 
+  protected readonly communes = signal<StatistiquesCommune[]>([]);
+  protected readonly chargementCommunes = signal(false);
+  protected readonly erreurCommunes = signal<string | null>(null);
+
   constructor() {
     if (this.authService.possede('TABLEAU_BORD_LIRE')) {
       this.chargerStatistiques();
+      this.chargerCommunes();
     }
   }
 
@@ -413,6 +498,21 @@ export class DashboardComponent {
       error: () => {
         this.erreurStats.set('Impossible de charger les statistiques.');
         this.chargementStats.set(false);
+      }
+    });
+  }
+
+  private chargerCommunes(): void {
+    this.chargementCommunes.set(true);
+    this.erreurCommunes.set(null);
+    this.statistiquesService.vueParCommunes().subscribe({
+      next: (donnees) => {
+        this.communes.set(donnees);
+        this.chargementCommunes.set(false);
+      },
+      error: () => {
+        this.erreurCommunes.set('Impossible de charger la vue par commune.');
+        this.chargementCommunes.set(false);
       }
     });
   }
