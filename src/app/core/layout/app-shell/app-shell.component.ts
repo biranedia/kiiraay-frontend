@@ -1,6 +1,8 @@
-import { Component, Input, inject } from '@angular/core';
+import { Component, Input, OnInit, inject, signal } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
+import { NotificationService } from '../../services/notification.service';
+import { NotificationAlerte } from '../../models/notification.model';
 
 interface LienNav {
   libelle: string;
@@ -66,13 +68,38 @@ const SECTIONS: SectionNav[] = [
   templateUrl: './app-shell.component.html',
   styleUrl: './app-shell.component.scss'
 })
-export class AppShellComponent {
+export class AppShellComponent implements OnInit {
   private readonly authService = inject(AuthService);
+  private readonly notificationService = inject(NotificationService);
 
   @Input() titre = '';
   @Input() sousTitre = '';
 
   readonly ICONES = ICONES;
+
+  // Cloche de notifications (section 17 du cahier des charges) : chargee une fois a
+  // l'ouverture de n'importe quelle page (la coquille est partagee par toutes), rafraichie
+  // a chaque ouverture du panneau pour rester a jour sans avoir besoin de polling continu.
+  readonly notifications = signal<NotificationAlerte[]>([]);
+  readonly panneauOuvert = signal(false);
+
+  ngOnInit(): void {
+    this.chargerNotifications();
+  }
+
+  private chargerNotifications(): void {
+    this.notificationService.obtenirNotifications().subscribe({
+      next: (notifications) => this.notifications.set(notifications),
+      error: () => this.notifications.set([])
+    });
+  }
+
+  basculerPanneauNotifications(): void {
+    this.panneauOuvert.update((ouvert) => !ouvert);
+    if (this.panneauOuvert()) {
+      this.chargerNotifications();
+    }
+  }
 
   get sectionsVisibles(): SectionNav[] {
     return SECTIONS
