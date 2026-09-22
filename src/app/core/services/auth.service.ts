@@ -6,6 +6,7 @@ import { environment } from '../../../environments/environment';
 import {
   ActivationRequest,
   AuthResponse,
+  ChangerMotDePasseRequest,
   InfoActivationResponse,
   LoginRequest,
   RegisterRequest,
@@ -80,6 +81,10 @@ export class AuthService {
 
   activerCompte(request: ActivationRequest): Observable<void> {
     return this.http.post<void>(`${environment.apiUrl}/auth/activer-compte`, request);
+  }
+
+  changerMotDePasse(request: ChangerMotDePasseRequest): Observable<void> {
+    return this.http.post<void>(`${environment.apiUrl}/auth/changer-mot-de-passe`, request);
   }
 
   private stockerSession(reponse: AuthResponse): void {

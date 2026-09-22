@@ -28,6 +28,14 @@ export const routes: Routes = [
     canActivate: [authGuard]
   },
   {
+    path: 'mon-compte/mot-de-passe',
+    canActivate: [authGuard],
+    loadComponent: () =>
+      import('./features/auth/changer-mot-de-passe/changer-mot-de-passe.component').then(
+        (m) => m.ChangerMotDePasseComponent
+      )
+  },
+  {
     path: 'territorial/departements',
     canActivate: [authGuard],
     loadComponent: () =>

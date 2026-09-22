@@ -1,5 +1,5 @@
 import { Component, computed, inject, signal } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../core/services/auth.service';
 import { StatistiquesService } from '../../core/services/statistiques.service';
 import { StatistiquesCommune, StatistiquesDepartementales } from '../../core/models/statistiques.model';
@@ -78,6 +78,7 @@ const ICONES: Record<string, string> = {
             }
           </div>
         </div>
+        <button type="button" class="bouton-mdp" (click)="allerVersChangementMotDePasse()">Changer mon mot de passe</button>
       </section>
 
       @if (authService.possede('TABLEAU_BORD_LIRE')) {
@@ -318,9 +319,26 @@ const ICONES: Record<string, string> = {
       justify-content: center;
       flex-shrink: 0;
     }
-    .infos-profil { min-width: 0; }
+    .infos-profil { min-width: 0; flex: 1; }
     .nom-utilisateur { margin: 0 0 8px; font-size: 1.15rem; font-weight: 700; color: #fff; text-transform: capitalize; }
     .badges-roles { display: flex; gap: 8px; flex-wrap: wrap; }
+    .bouton-mdp {
+      background: rgba(255, 255, 255, 0.12);
+      color: #fff;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      border-radius: 8px;
+      padding: 8px 14px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      cursor: pointer;
+      white-space: nowrap;
+      flex-shrink: 0;
+      align-self: center;
+
+      &:hover {
+        background: rgba(255, 255, 255, 0.22);
+      }
+    }
     .badge-role {
       background: rgba(255, 255, 255, 0.14);
       color: #fff;
@@ -470,6 +488,7 @@ const ICONES: Record<string, string> = {
 export class DashboardComponent {
   protected readonly authService = inject(AuthService);
   private readonly statistiquesService = inject(StatistiquesService);
+  private readonly router = inject(Router);
   protected readonly ICONES = ICONES;
 
   protected readonly stats = signal<StatistiquesDepartementales | null>(null);
@@ -515,6 +534,10 @@ export class DashboardComponent {
         this.chargementCommunes.set(false);
       }
     });
+  }
+
+  protected allerVersChangementMotDePasse(): void {
+    this.router.navigate(['/mon-compte/mot-de-passe']);
   }
 
   protected objetVide(obj: Record<string, number>): boolean {

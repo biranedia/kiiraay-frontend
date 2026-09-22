@@ -1,0 +1,85 @@
+<app-shell titre="Mon compte" sousTitre="Changer mon mot de passe">
+  <div class="carte-mdp">
+    <form [formGroup]="formulaire" (ngSubmit)="soumettre()">
+      <label for="motDePasseActuel">Mot de passe actuel</label>
+      <div class="champ-mdp">
+        <input
+          id="motDePasseActuel"
+          [type]="motDePasseActuelVisible() ? 'text' : 'password'"
+          formControlName="motDePasseActuel"
+          autocomplete="current-password"
+        />
+        <button
+          type="button"
+          class="bouton-oeil"
+          (click)="basculerVisibilite('motDePasseActuel')"
+          [attr.aria-label]="motDePasseActuelVisible() ? 'Masquer le mot de passe' : 'Afficher le mot de passe'"
+        >
+          @if (motDePasseActuelVisible()) {
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/><line x1="3" y1="21" x2="21" y2="3"/></svg>
+          } @else {
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
+          }
+        </button>
+      </div>
+
+      <label for="nouveauMotDePasse">Nouveau mot de passe (10 caracteres minimum)</label>
+      <div class="champ-mdp">
+        <input
+          id="nouveauMotDePasse"
+          [type]="nouveauMotDePasseVisible() ? 'text' : 'password'"
+          formControlName="nouveauMotDePasse"
+          autocomplete="new-password"
+        />
+        <button
+          type="button"
+          class="bouton-oeil"
+          (click)="basculerVisibilite('nouveauMotDePasse')"
+          [attr.aria-label]="nouveauMotDePasseVisible() ? 'Masquer le mot de passe' : 'Afficher le mot de passe'"
+        >
+          @if (nouveauMotDePasseVisible()) {
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/><line x1="3" y1="21" x2="21" y2="3"/></svg>
+          } @else {
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
+          }
+        </button>
+      </div>
+
+      <label for="confirmation">Confirmer le nouveau mot de passe</label>
+      <div class="champ-mdp">
+        <input
+          id="confirmation"
+          [type]="confirmationVisible() ? 'text' : 'password'"
+          formControlName="confirmation"
+          autocomplete="new-password"
+        />
+        <button
+          type="button"
+          class="bouton-oeil"
+          (click)="basculerVisibilite('confirmation')"
+          [attr.aria-label]="confirmationVisible() ? 'Masquer le mot de passe' : 'Afficher le mot de passe'"
+        >
+          @if (confirmationVisible()) {
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/><line x1="3" y1="21" x2="21" y2="3"/></svg>
+          } @else {
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
+          }
+        </button>
+      </div>
+
+      @if (messageErreur()) {
+        <p class="erreur">{{ messageErreur() }}</p>
+      }
+      @if (succes()) {
+        <p class="succes">Mot de passe change avec succes.</p>
+      }
+
+      <div class="actions-formulaire">
+        <button type="button" class="bouton-secondaire" (click)="retour()">Annuler</button>
+        <button type="submit" [disabled]="enCours()">
+          {{ enCours() ? 'Enregistrement...' : 'Changer le mot de passe' }}
+        </button>
+      </div>
+    </form>
+  </div>
+</app-shell>

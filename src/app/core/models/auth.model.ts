@@ -49,3 +49,9 @@ export interface ActivationRequest {
   token: string;
   motDePasse: string;
 }
+
+// Changement de mot de passe par l'utilisateur lui-meme (distinct de l'activation initiale).
+export interface ChangerMotDePasseRequest {
+  motDePasseActuel: string;
+  nouveauMotDePasse: string;
+}
