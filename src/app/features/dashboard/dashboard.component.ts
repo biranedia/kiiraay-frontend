@@ -1,5 +1,5 @@
 import { Component, computed, inject, signal } from '@angular/core';
-import { Router, RouterLink } from '@angular/router';
+import { Router } from '@angular/router';
 import { AuthService } from '../../core/services/auth.service';
 import { StatistiquesService } from '../../core/services/statistiques.service';
 import { StatistiquesCommune, StatistiquesDepartementales } from '../../core/models/statistiques.model';
@@ -65,7 +65,7 @@ const ICONES: Record<string, string> = {
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [RouterLink, AppShellComponent],
+  imports: [AppShellComponent],
   template: `
     <app-shell titre="Tableau de bord" sousTitre="Vue d'ensemble de la plateforme KIIRAAY">
       <section class="bandeau-profil">
@@ -271,29 +271,6 @@ const ICONES: Record<string, string> = {
         }
       </div>
 
-      <p class="section-titre">Acces rapide</p>
-      <nav class="raccourcis">
-        @if (authService.possede('TERRITOIRE_GERER')) {
-          <a routerLink="/territorial/departements">Departements</a>
-          <a routerLink="/territorial/arrondissements">Arrondissements</a>
-          <a routerLink="/territorial/communes-villes">Communes / Villes</a>
-          <a routerLink="/territorial/localites">Localites</a>
-        }
-        @if (authService.possede('CELLULE_GERER')) {
-          <a routerLink="/cellule/cellules">Cellules</a>
-        }
-        @if (authService.possede('COMITE_GERER')) {
-          <a routerLink="/comite/responsables">Responsables</a>
-          <a routerLink="/comite/comites">Comites</a>
-        }
-        @if (authService.possede('MEMBRE_LIRE')) {
-          <a routerLink="/membre/membres">Membres</a>
-        }
-        @if (authService.possede('ADMIN_GENERAL')) {
-          <a routerLink="/utilisateurs">Utilisateurs</a>
-          <a routerLink="/utilisateurs/nouveau">Nouvel utilisateur</a>
-        }
-      </nav>
     </app-shell>
   `,
   styles: [`
@@ -431,25 +408,6 @@ const ICONES: Record<string, string> = {
       }
     }
     .aucune-permission { margin: 0; font-size: 0.82rem; color: #9aa1ac; font-style: italic; }
-    .raccourcis { display: flex; gap: 12px; flex-wrap: wrap; }
-    .raccourcis a {
-      background: #fff;
-      border: 1px solid #e3e7ee;
-      border-radius: 10px;
-      padding: 12px 18px;
-      color: #16233f;
-      text-decoration: none;
-      font-weight: 600;
-      font-size: 0.88rem;
-      box-shadow: 0 1px 2px rgba(16, 24, 40, 0.04);
-      transition: border-color 0.15s ease, color 0.15s ease, box-shadow 0.15s ease, transform 0.1s ease;
-    }
-    .raccourcis a:hover {
-      border-color: #1f7a8c;
-      color: #1f7a8c;
-      box-shadow: 0 4px 10px rgba(16, 24, 40, 0.08);
-      transform: translateY(-1px);
-    }
 
     .carte-tableau {
       background: #fff;
