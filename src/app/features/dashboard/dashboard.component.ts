@@ -1,6 +1,8 @@
-import { Component, computed, inject } from '@angular/core';
+import { Component, computed, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { AuthService } from '../../core/services/auth.service';
+import { StatistiquesService } from '../../core/services/statistiques.service';
+import { StatistiquesDepartementales } from '../../core/models/statistiques.model';
 import { AppShellComponent } from '../../core/layout/app-shell/app-shell.component';
 
 // Libelles et regroupement lisibles pour chaque permission technique (code) : evite d'afficher
@@ -31,6 +33,19 @@ const LIBELLES_PERMISSIONS: Record<string, string> = {
   ADMIN_GENERAL: 'Administration generale'
 };
 
+const LIBELLES_STATUTS: Record<string, string> = {
+  BROUILLON: 'Brouillon',
+  EN_CONSTITUTION: 'En constitution',
+  EN_ATTENTE: 'En attente',
+  VALIDEE: 'Validees',
+  VALIDE: 'Valides',
+  NON_VALIDEE: 'Non validees',
+  NON_VALIDE: 'Non valides',
+  SUSPENDUE: 'Suspendues',
+  SUSPENDU: 'Suspendus',
+  INACTIVE: 'Inactives'
+};
+
 const GROUPES: { titre: string; icone: string; codes: string[] }[] = [
   { titre: 'Territoire', icone: 'territoire', codes: ['TERRITOIRE_GERER'] },
   { titre: 'Cellules & comites', icone: 'cellule', codes: ['CELLULE_GERER', 'CELLULE_VALIDER', 'COMITE_GERER'] },
@@ -41,8 +56,10 @@ const GROUPES: { titre: string; icone: string; codes: string[] }[] = [
 const ICONES: Record<string, string> = {
   territoire: 'M12 2 3 7v2h18V7l-9-5ZM4 20h16v-2H4v2Zm2-9v6h3v-6H6Zm5 0v6h2v-6h-2Zm4 0v6h3v-6h-3Z',
   cellule: 'M12 12a5 5 0 1 0 0-10 5 5 0 0 0 0 10Zm0 2c-4.4 0-8 2.2-8 5v3h16v-3c0-2.8-3.6-5-8-5Z',
+  comite: 'M8 11a3 3 0 1 0 0-6 3 3 0 0 0 0 6Zm8 0a3 3 0 1 0 0-6 3 3 0 0 0 0 6ZM2 20v-2c0-2.2 2.7-4 6-4s6 1.8 6 4v2H2Zm12-4c2.5.4 4 1.8 4 4v2h4v-2c0-2-2.3-3.6-4-4Z',
   membre: 'M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8Zm0 2c-4.4 0-8 2.2-8 5v3h16v-3c0-2.8-3.6-5-8-5Z',
-  utilisateur: 'M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8Zm0 2c-4.4 0-8 2.2-8 5v3h16v-3c0-2.8-3.6-5-8-5Zm7-9 1.5 1.5L17 9l3 3-1.5 1.5L15 10l3-3-1.5-1.5L19 5Z'
+  utilisateur: 'M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8Zm0 2c-4.4 0-8 2.2-8 5v3h16v-3c0-2.8-3.6-5-8-5Zm7-9 1.5 1.5L17 9l3 3-1.5 1.5L15 10l3-3-1.5-1.5L19 5Z',
+  mouvement: 'M13 3 4 14h6l-1 7 9-11h-6l1-7Z'
 };
 
 @Component({
@@ -62,6 +79,129 @@ const ICONES: Record<string, string> = {
           </div>
         </div>
       </section>
+
+      @if (authService.possede('TABLEAU_BORD_LIRE')) {
+        <p class="section-titre">Vue departementale</p>
+
+        @if (chargementStats()) {
+          <p class="chargement-stats">Chargement des statistiques...</p>
+        } @else if (erreurStats()) {
+          <p class="erreur-stats">{{ erreurStats() }}</p>
+        } @else if (stats(); as s) {
+          <div class="grille-kpi">
+            <div class="carte-kpi">
+              <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path [attr.d]="ICONES['territoire']"/></svg>
+              <div>
+                <p class="kpi-valeur">{{ s.nombreDepartements }}</p>
+                <p class="kpi-label">Departement{{ s.nombreDepartements > 1 ? 's' : '' }}</p>
+              </div>
+            </div>
+            <div class="carte-kpi">
+              <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path [attr.d]="ICONES['territoire']"/></svg>
+              <div>
+                <p class="kpi-valeur">{{ s.nombreCommunesVilles }}</p>
+                <p class="kpi-label">Communes / villes</p>
+              </div>
+            </div>
+            <div class="carte-kpi">
+              <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path [attr.d]="ICONES['territoire']"/></svg>
+              <div>
+                <p class="kpi-valeur">{{ s.nombreLocalites }}</p>
+                <p class="kpi-label">Localites</p>
+              </div>
+            </div>
+            <div class="carte-kpi">
+              <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path [attr.d]="ICONES['cellule']"/></svg>
+              <div>
+                <p class="kpi-valeur">{{ s.nombreCellules }}</p>
+                <p class="kpi-label">Cellules</p>
+              </div>
+            </div>
+            <div class="carte-kpi">
+              <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path [attr.d]="ICONES['comite']"/></svg>
+              <div>
+                <p class="kpi-valeur">{{ s.nombreComites }}</p>
+                <p class="kpi-label">Comites</p>
+              </div>
+            </div>
+            <div class="carte-kpi">
+              <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path [attr.d]="ICONES['membre']"/></svg>
+              <div>
+                <p class="kpi-valeur">{{ s.nombreMembres }}</p>
+                <p class="kpi-label">Membres</p>
+              </div>
+            </div>
+            <div class="carte-kpi">
+              <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path [attr.d]="ICONES['utilisateur']"/></svg>
+              <div>
+                <p class="kpi-valeur">{{ s.nombreResponsables }}</p>
+                <p class="kpi-label">Responsables</p>
+              </div>
+            </div>
+            <div class="carte-kpi">
+              <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path [attr.d]="ICONES['mouvement']"/></svg>
+              <div>
+                <p class="kpi-valeur">{{ s.mouvementsActifs }} / {{ s.nombreMouvements }}</p>
+                <p class="kpi-label">Mouvements actifs</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="grille-details">
+            <div class="carte-details">
+              <h3>Cellules par statut</h3>
+              @if (objetVide(s.cellulesParStatut)) {
+                <p class="aucune-donnee">Aucune cellule enregistree.</p>
+              } @else {
+                <div class="liste-statuts">
+                  @for (entree of entrees(s.cellulesParStatut); track entree.cle) {
+                    <div class="ligne-statut">
+                      <span class="badge" [class]="'badge-' + entree.cle.toLowerCase()">{{ libelleStatut(entree.cle) }}</span>
+                      <span class="valeur-statut">{{ entree.valeur }}</span>
+                    </div>
+                  }
+                </div>
+              }
+            </div>
+
+            <div class="carte-details">
+              <h3>Membres par statut</h3>
+              @if (objetVide(s.membresParStatut)) {
+                <p class="aucune-donnee">Aucun membre enregistre.</p>
+              } @else {
+                <div class="liste-statuts">
+                  @for (entree of entrees(s.membresParStatut); track entree.cle) {
+                    <div class="ligne-statut">
+                      <span class="badge" [class]="'badge-' + entree.cle.toLowerCase()">{{ libelleStatut(entree.cle) }}</span>
+                      <span class="valeur-statut">{{ entree.valeur }}</span>
+                    </div>
+                  }
+                </div>
+              }
+            </div>
+
+            <div class="carte-details">
+              <h3>Progression des comites</h3>
+              <div class="remplissage">
+                <div class="barre">
+                  <div class="barre-remplie" [style.width.%]="s.tauxRemplissageMoyen"></div>
+                </div>
+                <p class="detail">Taux de remplissage moyen : {{ s.tauxRemplissageMoyen }}%</p>
+              </div>
+              <div class="liste-statuts">
+                <div class="ligne-statut">
+                  <span class="badge badge-complet">Complets</span>
+                  <span class="valeur-statut">{{ s.comitesComplets }}</span>
+                </div>
+                <div class="ligne-statut">
+                  <span class="badge badge-incomplet">Incomplets</span>
+                  <span class="valeur-statut">{{ s.comitesIncomplets }}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        }
+      }
 
       <p class="section-titre">Permissions</p>
       <div class="grille-permissions">
@@ -146,6 +286,52 @@ const ICONES: Record<string, string> = {
       letter-spacing: 0.02em;
     }
     .section-titre { font-size: 0.72rem; font-weight: 700; color: #6b7280; text-transform: uppercase; letter-spacing: 0.06em; margin: 0 0 14px; }
+    .chargement-stats, .erreur-stats { color: #6b7280; margin: 0 0 24px; font-size: 0.9rem; }
+    .erreur-stats { color: #b3261e; }
+
+    .grille-kpi {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+      gap: 14px;
+      margin-bottom: 18px;
+    }
+    .carte-kpi {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: #fff;
+      border: 1px solid #e3e7ee;
+      border-radius: 12px;
+      padding: 14px 16px;
+      box-shadow: 0 1px 2px rgba(16, 24, 40, 0.04), 0 1px 3px rgba(16, 24, 40, 0.06);
+      color: #1f7a8c;
+    }
+    .kpi-valeur { margin: 0; font-size: 1.3rem; font-weight: 800; color: #16233f; line-height: 1.1; }
+    .kpi-label { margin: 2px 0 0; font-size: 0.76rem; color: #6b7280; }
+
+    .grille-details {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 16px;
+      margin-bottom: 32px;
+    }
+    .carte-details {
+      background: #fff;
+      border: 1px solid #e3e7ee;
+      border-radius: 12px;
+      padding: 18px 20px;
+      box-shadow: 0 1px 2px rgba(16, 24, 40, 0.04), 0 1px 3px rgba(16, 24, 40, 0.06);
+    }
+    .carte-details h3 { margin: 0 0 14px; font-size: 0.92rem; font-weight: 700; color: #16233f; }
+    .liste-statuts { display: flex; flex-direction: column; gap: 10px; }
+    .ligne-statut { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+    .valeur-statut { font-weight: 700; color: #16233f; font-size: 0.9rem; }
+    .aucune-donnee { margin: 0; font-size: 0.82rem; color: #9aa1ac; font-style: italic; }
+    .remplissage { margin-bottom: 14px; }
+    .remplissage .barre { background: #eef0f4; border-radius: 8px; height: 8px; overflow: hidden; margin-bottom: 6px; }
+    .remplissage .barre-remplie { background: #1e3a5f; height: 100%; transition: width 0.3s ease; }
+    .remplissage .detail { margin: 0; font-size: 0.8rem; color: #6b7280; }
+
     .grille-permissions {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
@@ -203,7 +389,45 @@ const ICONES: Record<string, string> = {
 })
 export class DashboardComponent {
   protected readonly authService = inject(AuthService);
+  private readonly statistiquesService = inject(StatistiquesService);
   protected readonly ICONES = ICONES;
+
+  protected readonly stats = signal<StatistiquesDepartementales | null>(null);
+  protected readonly chargementStats = signal(false);
+  protected readonly erreurStats = signal<string | null>(null);
+
+  constructor() {
+    if (this.authService.possede('TABLEAU_BORD_LIRE')) {
+      this.chargerStatistiques();
+    }
+  }
+
+  private chargerStatistiques(): void {
+    this.chargementStats.set(true);
+    this.erreurStats.set(null);
+    this.statistiquesService.vueDepartementale().subscribe({
+      next: (donnees) => {
+        this.stats.set(donnees);
+        this.chargementStats.set(false);
+      },
+      error: () => {
+        this.erreurStats.set('Impossible de charger les statistiques.');
+        this.chargementStats.set(false);
+      }
+    });
+  }
+
+  protected objetVide(obj: Record<string, number>): boolean {
+    return Object.keys(obj ?? {}).length === 0;
+  }
+
+  protected entrees(obj: Record<string, number>): { cle: string; valeur: number }[] {
+    return Object.entries(obj ?? {}).map(([cle, valeur]) => ({ cle, valeur }));
+  }
+
+  protected libelleStatut(code: string): string {
+    return LIBELLES_STATUTS[code] ?? code;
+  }
 
   protected readonly initiales = computed(() => {
     const login = this.authService.utilisateur()?.login ?? '';
