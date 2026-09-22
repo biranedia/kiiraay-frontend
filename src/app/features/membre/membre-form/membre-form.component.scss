@@ -81,4 +81,15 @@
     border-radius: 50%;
     object-fit: cover;
   }
+
+}
+
+// Message de validation inline (date incoherente), sous le champ concerne, distinct du
+// bandeau .message-erreur global (qui reste reserve aux erreurs de soumission du serveur).
+// Place au niveau racine (et non dans .bloc-cni) car utilise aussi bien dans le formulaire
+// principal (date de naissance) que dans le bloc CNI.
+.erreur-champ {
+  margin: -8px 0 4px;
+  font-size: 0.78rem;
+  color: var(--couleur-danger);
 }

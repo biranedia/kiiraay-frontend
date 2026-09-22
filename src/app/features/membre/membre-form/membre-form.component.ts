@@ -1,9 +1,37 @@
 import { Component, OnDestroy, inject, signal } from '@angular/core';
-import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
+import { AbstractControl, ReactiveFormsModule, FormBuilder, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Comite } from '../../../core/models/comite.model';
 import { ComiteService } from '../../comite/services/comite.service';
 import { MembreService } from '../services/membre.service';
+
+// Aujourd'hui au format "YYYY-MM-DD" attendu par un <input type="date"> : sert de borne "max"
+// pour empecher de saisir une date de naissance ou de delivrance de CNI dans le futur
+// (observe en production : une fiche avait une date de delivrance en 2029).
+function dateDuJourAuFormatInput(): string {
+  return new Date().toISOString().slice(0, 10);
+}
+
+// Coherence entre les deux dates de la CNI : l'expiration doit toujours suivre la delivrance.
+// Sans ce controle, une fiche pouvait etre enregistree avec une expiration anterieure a la
+// delivrance (ex. delivree en 2029, expiree en 2026).
+const validerCoherenceDatesCni: ValidatorFn = (groupe: AbstractControl): ValidationErrors | null => {
+  const delivrance = groupe.get('dateDelivranceCNI')?.value;
+  const expiration = groupe.get('dateExpirationCNI')?.value;
+  if (!delivrance || !expiration) {
+    return null;
+  }
+  return expiration > delivrance ? null : { expirationAvantDelivrance: true };
+};
+
+// Un champ date (chaine "YYYY-MM-DD") ne doit jamais depasser aujourd'hui : rejette les dates
+// de naissance ou de delivrance de CNI saisies dans le futur.
+const dateNonFuture: ValidatorFn = (champ: AbstractControl): ValidationErrors | null => {
+  if (!champ.value) {
+    return null;
+  }
+  return champ.value > dateDuJourAuFormatInput() ? { dateFuture: true } : null;
+};
 
 @Component({
   selector: 'app-membre-form',
@@ -27,6 +55,9 @@ export class MembreFormComponent implements OnDestroy {
   readonly enCours = signal(false);
   readonly messageErreur = signal<string | null>(null);
   readonly alertesDoublon = signal<string[]>([]);
+
+  // Borne "max" des champs date (naissance, delivrance CNI) : interdit toute date future.
+  readonly dateMaximale = dateDuJourAuFormatInput();
 
   // Preuve visuelle de la CNI : sans les deux photos, le membre ne peut pas etre valide
   // (voir MembreService.valider() cote backend). La carte d'electeur ne necessite pas de
@@ -58,7 +89,7 @@ export class MembreFormComponent implements OnDestroy {
   readonly formulaire = this.fb.nonNullable.group({
     nom: ['', [Validators.required, Validators.minLength(2)]],
     prenom: ['', [Validators.required, Validators.minLength(2)]],
-    dateNaissance: ['', Validators.required],
+    dateNaissance: ['', [Validators.required, dateNonFuture]],
     lieuNaissance: [''],
     sexe: ['M' as 'M' | 'F', Validators.required],
     telephone: [''],
@@ -66,11 +97,11 @@ export class MembreFormComponent implements OnDestroy {
     adresse: [''],
     comiteId: [null as number | null, Validators.required],
     numeroCNI: ['', Validators.required],
-    dateDelivranceCNI: [''],
+    dateDelivranceCNI: ['', dateNonFuture],
     dateExpirationCNI: [''],
     lieuDelivranceCNI: [''],
     numeroCarteElecteur: ['']
-  });
+  }, { validators: validerCoherenceDatesCni });
 
   constructor() {
     this.comiteService.listerTous().subscribe({

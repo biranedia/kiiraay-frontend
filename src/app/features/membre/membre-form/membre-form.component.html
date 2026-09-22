@@ -21,7 +21,10 @@
     <input id="prenom" type="text" formControlName="prenom" />
 
     <label for="dateNaissance">Date de naissance</label>
-    <input id="dateNaissance" type="date" formControlName="dateNaissance" />
+    <input id="dateNaissance" type="date" formControlName="dateNaissance" [attr.max]="dateMaximale" />
+    @if (formulaire.controls.dateNaissance.touched && formulaire.controls.dateNaissance.hasError('dateFuture')) {
+      <p class="erreur-champ">La date de naissance ne peut pas etre dans le futur.</p>
+    }
 
     <label for="lieuNaissance">Lieu de naissance</label>
     <input id="lieuNaissance" type="text" formControlName="lieuNaissance" />
@@ -56,10 +59,16 @@
       <input id="numeroCNI" type="text" formControlName="numeroCNI" />
 
       <label for="dateDelivranceCNI">Date de delivrance</label>
-      <input id="dateDelivranceCNI" type="date" formControlName="dateDelivranceCNI" />
+      <input id="dateDelivranceCNI" type="date" formControlName="dateDelivranceCNI" [attr.max]="dateMaximale" />
+      @if (formulaire.controls.dateDelivranceCNI.touched && formulaire.controls.dateDelivranceCNI.hasError('dateFuture')) {
+        <p class="erreur-champ">La date de delivrance ne peut pas etre dans le futur.</p>
+      }
 
       <label for="dateExpirationCNI">Date d'expiration</label>
       <input id="dateExpirationCNI" type="date" formControlName="dateExpirationCNI" />
+      @if (formulaire.hasError('expirationAvantDelivrance') && formulaire.controls.dateExpirationCNI.touched) {
+        <p class="erreur-champ">La date d'expiration doit etre posterieure a la date de delivrance.</p>
+      }
 
       <label for="lieuDelivranceCNI">Lieu de delivrance</label>
       <input id="lieuDelivranceCNI" type="text" formControlName="lieuDelivranceCNI" />
