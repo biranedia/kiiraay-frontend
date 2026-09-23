@@ -23,8 +23,41 @@
       <button type="button" class="bouton-secondaire" (click)="exporterCsv()" [disabled]="enExport()">
         {{ enExport() ? 'Export...' : 'Exporter CSV' }}
       </button>
+      <button type="button" class="bouton-secondaire" (click)="exporterExcel()" [disabled]="enExport()">
+        {{ enExport() ? 'Export...' : 'Exporter Excel' }}
+      </button>
+    }
+    @if (peutImporter()) {
+      <label class="bouton-secondaire bouton-fichier">
+        {{ enImport() ? 'Import...' : 'Importer (.csv/.xlsx)' }}
+        <input type="file" accept=".csv,.xlsx" (change)="importer($event)" [disabled]="enImport()" hidden />
+      </label>
     }
   </div>
+
+  @if (resultatImport(); as resultat) {
+    <div class="carte-resultat-import">
+      <div class="entete-resultat-import">
+        <h3>
+          Import termine : {{ resultat.nombreReussies }} reussie{{ resultat.nombreReussies > 1 ? 's' : '' }}
+          / {{ resultat.nombreLignes }}
+          @if (resultat.nombreEchecs > 0) {
+            <span class="alerte-texte">({{ resultat.nombreEchecs }} echec{{ resultat.nombreEchecs > 1 ? 's' : '' }})</span>
+          }
+        </h3>
+        <button type="button" class="bouton-lien" (click)="fermerResultatImport()">Fermer</button>
+      </div>
+      @if (resultat.nombreEchecs > 0) {
+        <ul class="liste-echecs-import">
+          @for (ligne of resultat.resultats; track ligne.ligne) {
+            @if (!ligne.reussie) {
+              <li>Ligne {{ ligne.ligne }} : {{ ligne.message }}</li>
+            }
+          }
+        </ul>
+      }
+    </div>
+  }
 
   @if (messageErreur()) {
     <p class="message-erreur">{{ messageErreur() }}</p>

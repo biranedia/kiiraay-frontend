@@ -1,7 +1,7 @@
 import { Component, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
-import { Membre, MembreCritereRecherche, StatutMembre } from '../../../core/models/membre.model';
+import { ImportMembresResponse, Membre, MembreCritereRecherche, StatutMembre } from '../../../core/models/membre.model';
 import { MembreService } from '../services/membre.service';
 import { AuthService } from '../../../core/services/auth.service';
 
@@ -22,6 +22,8 @@ export class MembreListComponent {
   readonly messageErreur = signal<string | null>(null);
   readonly enAction = signal<number | null>(null);
   readonly enExport = signal(false);
+  readonly enImport = signal(false);
+  readonly resultatImport = signal<ImportMembresResponse | null>(null);
 
   // Filtres de recherche multi-criteres (section 12 du cahier des charges). Modifies
   // via ngModel dans le template, appliques uniquement au clic sur "Rechercher".
@@ -93,14 +95,29 @@ export class MembreListComponent {
   // Exporte au format CSV les membres correspondant aux filtres actuellement actifs (ou
   // tous si aucun filtre) : declenche un telechargement direct depuis le navigateur.
   exporterCsv(): void {
+    this.telecharger(
+      this.membreService.exporterCsv(this.filtresActifs() ? this.critereCourant() : {}),
+      'membres.csv'
+    );
+  }
+
+  // Export Excel (.xlsx), memes filtres que l'export CSV : plus pratique pour une ouverture
+  // directe dans Excel (mise en forme des entetes, pas de souci d'encodage).
+  exporterExcel(): void {
+    this.telecharger(
+      this.membreService.exporterExcel(this.filtresActifs() ? this.critereCourant() : {}),
+      'membres.xlsx'
+    );
+  }
+
+  private telecharger(source: ReturnType<MembreService['exporterCsv']>, nomFichier: string): void {
     this.enExport.set(true);
-    const criteres = this.filtresActifs() ? this.critereCourant() : {};
-    this.membreService.exporterCsv(criteres).subscribe({
+    source.subscribe({
       next: (blob) => {
         const url = window.URL.createObjectURL(blob);
         const lien = document.createElement('a');
         lien.href = url;
-        lien.download = 'membres.csv';
+        lien.download = nomFichier;
         lien.click();
         window.URL.revokeObjectURL(url);
         this.enExport.set(false);
@@ -110,6 +127,41 @@ export class MembreListComponent {
         this.enExport.set(false);
       }
     });
+  }
+
+  peutImporter(): boolean {
+    return this.authService.possede('MEMBRE_ECRIRE');
+  }
+
+  // Declenche par la selection d'un fichier (input caché, voir template) : envoie le fichier
+  // au backend et affiche le rapport detaille (succes/echecs par ligne), puis recharge la
+  // liste pour montrer les nouvelles fiches creees.
+  importer(evenement: Event): void {
+    const input = evenement.target as HTMLInputElement;
+    const fichier = input.files?.[0];
+    if (!fichier) {
+      return;
+    }
+    this.enImport.set(true);
+    this.resultatImport.set(null);
+    this.messageErreur.set(null);
+    this.membreService.importer(fichier).subscribe({
+      next: (resultat) => {
+        this.resultatImport.set(resultat);
+        this.enImport.set(false);
+        input.value = '';
+        this.charger();
+      },
+      error: (err) => {
+        this.messageErreur.set(err?.error?.message ?? 'Impossible d\'importer ce fichier.');
+        this.enImport.set(false);
+        input.value = '';
+      }
+    });
+  }
+
+  fermerResultatImport(): void {
+    this.resultatImport.set(null);
   }
 
   // Droit general de creation/modification/suppression des fiches membre

@@ -34,3 +34,42 @@
     padding: 8px 4px;
   }
 }
+
+.bouton-fichier {
+  display: inline-flex;
+  align-items: center;
+  cursor: pointer;
+}
+
+.carte-resultat-import {
+  background: #fff;
+  border: 1px solid var(--couleur-bordure, #e3e7ee);
+  border-radius: 10px;
+  padding: 14px 18px;
+  margin-bottom: 18px;
+
+  .entete-resultat-import {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+
+    h3 {
+      margin: 0;
+      font-size: 0.92rem;
+      font-weight: 700;
+    }
+  }
+
+  .liste-echecs-import {
+    margin: 10px 0 0;
+    padding-left: 18px;
+    font-size: 0.85rem;
+    color: #9c2b22;
+
+    li {
+      margin-bottom: 4px;
+    }
+  }
+}

@@ -3,7 +3,7 @@ import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from '../../../../environments/environment';
 import { HttpParams } from '@angular/common/http';
-import { Membre, MembreCritereRecherche, MembreRequest } from '../../../core/models/membre.model';
+import { ImportMembresResponse, Membre, MembreCritereRecherche, MembreRequest } from '../../../core/models/membre.model';
 
 @Injectable({ providedIn: 'root' })
 export class MembreService {
@@ -24,6 +24,22 @@ export class MembreService {
   // ensuite transforme en telechargement par l'appelant (voir MembreListComponent).
   exporterCsv(criteres: MembreCritereRecherche): Observable<Blob> {
     return this.http.get(`${this.baseUrl}/export`, { params: this.versParametres(criteres), responseType: 'blob' });
+  }
+
+  // Export Excel (.xlsx), mêmes criteres et memes colonnes que exporterCsv() : plus pratique
+  // pour une ouverture directe dans Excel (pas de souci d'encodage/separateur).
+  exporterExcel(criteres: MembreCritereRecherche): Observable<Blob> {
+    return this.http.get(`${this.baseUrl}/export-excel`, { params: this.versParametres(criteres), responseType: 'blob' });
+  }
+
+  // Import en masse depuis un fichier .csv ou .xlsx (voir ImportMembresResponse cote backend
+  // pour le detail des colonnes attendues). Le resultat rapporte, ligne par ligne, les succes
+  // et les echecs (doublons, comite introuvable, champs invalides...) sans jamais tout rejeter
+  // pour une seule ligne en erreur.
+  importer(fichier: File): Observable<ImportMembresResponse> {
+    const donnees = new FormData();
+    donnees.append('fichier', fichier);
+    return this.http.post<ImportMembresResponse>(`${this.baseUrl}/import`, donnees);
   }
 
   private versParametres(criteres: MembreCritereRecherche): HttpParams {

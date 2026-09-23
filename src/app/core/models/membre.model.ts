@@ -53,3 +53,19 @@ export interface MembreCritereRecherche {
   statut?: StatutMembre;
   comiteId?: number;
 }
+
+// Resultat de l'import en masse (voir MembreService.importer()) : un detail par ligne du
+// fichier source, pour que l'utilisateur puisse retrouver et corriger les lignes en echec.
+export interface ImportMembreLigneResultat {
+  ligne: number;
+  reussie: boolean;
+  message: string;
+  identifiantUnique: string | null;
+}
+
+export interface ImportMembresResponse {
+  nombreLignes: number;
+  nombreReussies: number;
+  nombreEchecs: number;
+  resultats: ImportMembreLigneResultat[];
+}
