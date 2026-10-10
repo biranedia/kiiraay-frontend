@@ -1,3 +1,4 @@
+import { ConfirmationService } from '../../../../core/services/confirmation.service';
 import { Component, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { Arrondissement } from '../../../../core/models/territorial.model';
@@ -14,6 +15,7 @@ import { AppShellComponent } from '../../../../core/layout/app-shell/app-shell.c
 })
 export class ArrondissementListComponent {
   private readonly arrondissementService = inject(ArrondissementService);
+  private readonly confirmation = inject(ConfirmationService);
   private readonly authService = inject(AuthService);
 
   readonly arrondissements = signal<Arrondissement[]>([]);
@@ -43,8 +45,8 @@ export class ArrondissementListComponent {
     });
   }
 
-  supprimer(item: Arrondissement): void {
-    if (!confirm(`Supprimer "${item.nom}" ?`)) {
+  async supprimer(item: Arrondissement): Promise<void> {
+    if (!(await this.confirmation.demander(`Supprimer "${item.nom}" ?`))) {
       return;
     }
     this.arrondissementService.supprimer(item.id).subscribe({

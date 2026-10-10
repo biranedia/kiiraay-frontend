@@ -1,4 +1,5 @@
 import { QrCodeService } from '../../../core/services/qrcode.service';
+import { ConfirmationService } from '../../../core/services/confirmation.service';
 import { Component, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { Comite } from '../../../core/models/comite.model';
@@ -15,6 +16,7 @@ import { AppShellComponent } from '../../../core/layout/app-shell/app-shell.comp
 })
 export class ComiteListComponent {
   private readonly comiteService = inject(ComiteService);
+  private readonly confirmation = inject(ConfirmationService);
   private readonly qrCodeService = inject(QrCodeService);
   private readonly authService = inject(AuthService);
 
@@ -45,8 +47,8 @@ export class ComiteListComponent {
     });
   }
 
-  supprimer(comite: Comite): void {
-    if (!confirm(`Supprimer le comite "${comite.code}" ?`)) {
+  async supprimer(comite: Comite): Promise<void> {
+    if (!(await this.confirmation.demander(`Supprimer le comite "${comite.code}" ?`))) {
       return;
     }
     this.comiteService.supprimer(comite.id).subscribe({

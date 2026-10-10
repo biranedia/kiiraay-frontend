@@ -1,3 +1,4 @@
+import { ConfirmationService } from '../../../core/services/confirmation.service';
 import { Component, inject, signal } from '@angular/core';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -18,6 +19,7 @@ import { AppShellComponent } from '../../../core/layout/app-shell/app-shell.comp
 })
 export class BureauDetailComponent {
   private readonly bureauService = inject(BureauService);
+  private readonly confirmation = inject(ConfirmationService);
   private readonly authService = inject(AuthService);
   private readonly route = inject(ActivatedRoute);
   private readonly fb = inject(FormBuilder);
@@ -96,8 +98,8 @@ export class BureauDetailComponent {
     });
   }
 
-  revoquer(fonction: FonctionBureau): void {
-    if (!confirm(`Revoquer ${fonction.prenom} ${fonction.nom} de son poste ?`)) {
+  async revoquer(fonction: FonctionBureau): Promise<void> {
+    if (!(await this.confirmation.demander(`Revoquer ${fonction.prenom} ${fonction.nom} de son poste ?`))) {
       return;
     }
     this.fonctionEnCoursId.set(fonction.id);

@@ -1,4 +1,5 @@
 import { MotifDialogComponent } from '../../../shared/motif-dialog/motif-dialog.component';
+import { ConfirmationService } from '../../../core/services/confirmation.service';
 import { Component, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { DatePipe } from '@angular/common';
@@ -17,6 +18,7 @@ import { AppShellComponent } from '../../../core/layout/app-shell/app-shell.comp
 })
 export class MembreListComponent {
   private readonly membreService = inject(MembreService);
+  private readonly confirmation = inject(ConfirmationService);
   private readonly authService = inject(AuthService);
 
   readonly membres = signal<Membre[]>([]);
@@ -236,8 +238,8 @@ export class MembreListComponent {
     });
   }
 
-  rejeter(membre: Membre): void {
-    if (!confirm(`Rejeter la fiche de "${membre.prenom} ${membre.nom}" ?`)) {
+  async rejeter(membre: Membre): Promise<void> {
+    if (!(await this.confirmation.demander(`Rejeter la fiche de "${membre.prenom} ${membre.nom}" ?`))) {
       return;
     }
     this.enAction.set(membre.id);
@@ -250,8 +252,8 @@ export class MembreListComponent {
     });
   }
 
-  supprimer(membre: Membre): void {
-    if (!confirm(`Supprimer la fiche de "${membre.prenom} ${membre.nom}" ?`)) {
+  async supprimer(membre: Membre): Promise<void> {
+    if (!(await this.confirmation.demander(`Supprimer la fiche de "${membre.prenom} ${membre.nom}" ?`))) {
       return;
     }
     this.membreService.supprimer(membre.id).subscribe({
@@ -298,8 +300,8 @@ export class MembreListComponent {
     this.executer(x.id, this.membreService.reactiver(x.id));
   }
 
-  restaurer(x: Membre): void {
-    if (confirm(`Restaurer ${`${x.prenom} ${x.nom}`} ? La fiche repassera en brouillon et devra etre resoumise.`)) {
+  async restaurer(x: Membre): Promise<void> {
+    if (await this.confirmation.demander(`Restaurer ${`${x.prenom} ${x.nom}`} ? La fiche repassera en brouillon et devra etre resoumise.`)) {
       this.executer(x.id, this.membreService.restaurer(x.id));
     }
   }

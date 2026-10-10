@@ -1,6 +1,7 @@
 import { DatePipe } from '@angular/common';
 import { QrCodeService } from '../../../core/services/qrcode.service';
 import { MotifDialogComponent } from '../../../shared/motif-dialog/motif-dialog.component';
+import { ConfirmationService } from '../../../core/services/confirmation.service';
 import { Component, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { Cellule } from '../../../core/models/cellule.model';
@@ -17,6 +18,7 @@ import { AppShellComponent } from '../../../core/layout/app-shell/app-shell.comp
 })
 export class CelluleListComponent {
   private readonly celluleService = inject(CelluleService);
+  private readonly confirmation = inject(ConfirmationService);
   private readonly qrCodeService = inject(QrCodeService);
   private readonly authService = inject(AuthService);
 
@@ -90,8 +92,8 @@ export class CelluleListComponent {
     });
   }
 
-  rejeter(cellule: Cellule): void {
-    if (!confirm(`Rejeter la cellule "${cellule.nom}" ?`)) {
+  async rejeter(cellule: Cellule): Promise<void> {
+    if (!(await this.confirmation.demander(`Rejeter la cellule "${cellule.nom}" ?`))) {
       return;
     }
     this.enAction.set(cellule.id);
@@ -104,8 +106,8 @@ export class CelluleListComponent {
     });
   }
 
-  supprimer(cellule: Cellule): void {
-    if (!confirm(`Supprimer la cellule "${cellule.nom}" ?`)) {
+  async supprimer(cellule: Cellule): Promise<void> {
+    if (!(await this.confirmation.demander(`Supprimer la cellule "${cellule.nom}" ?`))) {
       return;
     }
     this.celluleService.supprimer(cellule.id).subscribe({
@@ -158,8 +160,8 @@ export class CelluleListComponent {
     this.executer(x.id, this.celluleService.reactiver(x.id));
   }
 
-  restaurer(x: Cellule): void {
-    if (confirm(`Restaurer ${`${x.code} - ${x.nom}`} ? La fiche repassera en brouillon et devra etre resoumise.`)) {
+  async restaurer(x: Cellule): Promise<void> {
+    if (await this.confirmation.demander(`Restaurer ${`${x.code} - ${x.nom}`} ? La fiche repassera en brouillon et devra etre resoumise.`)) {
       this.executer(x.id, this.celluleService.restaurer(x.id));
     }
   }

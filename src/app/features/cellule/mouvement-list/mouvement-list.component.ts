@@ -1,3 +1,4 @@
+import { ConfirmationService } from '../../../core/services/confirmation.service';
 import { Component, inject, signal } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { Mouvement } from '../../../core/models/mouvement.model';
@@ -14,6 +15,7 @@ import { AppShellComponent } from '../../../core/layout/app-shell/app-shell.comp
 })
 export class MouvementListComponent {
   private readonly mouvementService = inject(MouvementService);
+  private readonly confirmation = inject(ConfirmationService);
   private readonly authService = inject(AuthService);
   private readonly route = inject(ActivatedRoute);
 
@@ -47,8 +49,8 @@ export class MouvementListComponent {
     });
   }
 
-  cloturer(mouvement: Mouvement): void {
-    if (!confirm(`Cloturer le mouvement "${mouvement.categorie}" ?`)) {
+  async cloturer(mouvement: Mouvement): Promise<void> {
+    if (!(await this.confirmation.demander(`Cloturer le mouvement "${mouvement.categorie}" ?`))) {
       return;
     }
     this.enAction.set(mouvement.id);
@@ -58,8 +60,8 @@ export class MouvementListComponent {
     });
   }
 
-  supprimer(mouvement: Mouvement): void {
-    if (!confirm(`Supprimer ce mouvement ?`)) {
+  async supprimer(mouvement: Mouvement): Promise<void> {
+    if (!(await this.confirmation.demander(`Supprimer ce mouvement ?`))) {
       return;
     }
     this.mouvementService.supprimer(mouvement.id).subscribe({

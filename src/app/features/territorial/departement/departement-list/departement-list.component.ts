@@ -1,3 +1,4 @@
+import { ConfirmationService } from '../../../../core/services/confirmation.service';
 import { Component, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { Departement } from '../../../../core/models/territorial.model';
@@ -14,6 +15,7 @@ import { AppShellComponent } from '../../../../core/layout/app-shell/app-shell.c
 })
 export class DepartementListComponent {
   private readonly departementService = inject(DepartementService);
+  private readonly confirmation = inject(ConfirmationService);
   private readonly authService = inject(AuthService);
 
   readonly departements = signal<Departement[]>([]);
@@ -43,8 +45,8 @@ export class DepartementListComponent {
     });
   }
 
-  supprimer(departement: Departement): void {
-    if (!confirm(`Supprimer le departement "${departement.nom}" ?`)) {
+  async supprimer(departement: Departement): Promise<void> {
+    if (!(await this.confirmation.demander(`Supprimer le departement "${departement.nom}" ?`))) {
       return;
     }
     this.departementService.supprimer(departement.id).subscribe({

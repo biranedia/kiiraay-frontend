@@ -1,3 +1,4 @@
+import { ConfirmationService } from '../../../../core/services/confirmation.service';
 import { Component, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { Localite } from '../../../../core/models/territorial.model';
@@ -14,6 +15,7 @@ import { AppShellComponent } from '../../../../core/layout/app-shell/app-shell.c
 })
 export class LocaliteListComponent {
   private readonly localiteService = inject(LocaliteService);
+  private readonly confirmation = inject(ConfirmationService);
   private readonly authService = inject(AuthService);
 
   readonly localites = signal<Localite[]>([]);
@@ -43,8 +45,8 @@ export class LocaliteListComponent {
     });
   }
 
-  supprimer(item: Localite): void {
-    if (!confirm(`Supprimer "${item.nom}" ?`)) {
+  async supprimer(item: Localite): Promise<void> {
+    if (!(await this.confirmation.demander(`Supprimer "${item.nom}" ?`))) {
       return;
     }
     this.localiteService.supprimer(item.id).subscribe({
