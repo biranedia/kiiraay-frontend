@@ -1,5 +1,6 @@
 import { QrCodeService } from '../../../core/services/qrcode.service';
 import { ConfirmationService } from '../../../core/services/confirmation.service';
+import { TableauCartesDirective } from '../../../shared/tableau-cartes.directive';
 import { Component, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { Comite } from '../../../core/models/comite.model';
@@ -10,7 +11,7 @@ import { AppShellComponent } from '../../../core/layout/app-shell/app-shell.comp
 @Component({
   selector: 'app-comite-list',
   standalone: true,
-  imports: [RouterLink, AppShellComponent],
+  imports: [TableauCartesDirective, RouterLink, AppShellComponent],
   templateUrl: './comite-list.component.html',
   styleUrl: './comite-list.component.scss'
 })

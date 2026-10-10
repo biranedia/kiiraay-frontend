@@ -104,3 +104,9 @@
   font-weight: 600;
   color: var(--couleur-danger);
 }
+
+@media (max-width: 700px) {
+  .actions-ligne button {
+    min-height: 40px;
+  }
+}

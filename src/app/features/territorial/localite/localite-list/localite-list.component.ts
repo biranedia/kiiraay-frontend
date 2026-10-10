@@ -1,4 +1,5 @@
 import { ConfirmationService } from '../../../../core/services/confirmation.service';
+import { TableauCartesDirective } from '../../../../shared/tableau-cartes.directive';
 import { Component, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { Localite } from '../../../../core/models/territorial.model';
@@ -9,7 +10,7 @@ import { AppShellComponent } from '../../../../core/layout/app-shell/app-shell.c
 @Component({
   selector: 'app-localite-list',
   standalone: true,
-  imports: [RouterLink, AppShellComponent],
+  imports: [TableauCartesDirective, RouterLink, AppShellComponent],
   templateUrl: './localite-list.component.html',
   styleUrl: './localite-list.component.scss'
 })

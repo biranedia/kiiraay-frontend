@@ -1,4 +1,5 @@
 import { ConfirmationService } from '../../../core/services/confirmation.service';
+import { TableauCartesDirective } from '../../../shared/tableau-cartes.directive';
 import { Component, inject, signal } from '@angular/core';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -13,7 +14,7 @@ import { AppShellComponent } from '../../../core/layout/app-shell/app-shell.comp
 @Component({
   selector: 'app-bureau-detail',
   standalone: true,
-  imports: [ReactiveFormsModule, AppShellComponent],
+  imports: [TableauCartesDirective, ReactiveFormsModule, AppShellComponent],
   templateUrl: './bureau-detail.component.html',
   styleUrl: './bureau-detail.component.scss'
 })

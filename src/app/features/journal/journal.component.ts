@@ -1,3 +1,4 @@
+import { TableauCartesDirective } from '../../shared/tableau-cartes.directive';
 import { Component, inject, signal } from '@angular/core';
 import { DatePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -11,7 +12,7 @@ import { JournalService } from './journal.service';
 @Component({
   selector: 'app-journal',
   standalone: true,
-  imports: [FormsModule, DatePipe, AppShellComponent],
+  imports: [TableauCartesDirective, FormsModule, DatePipe, AppShellComponent],
   templateUrl: './journal.component.html',
   styleUrl: './journal.component.scss'
 })

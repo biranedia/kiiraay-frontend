@@ -1,5 +1,6 @@
 import { MotifDialogComponent } from '../../../shared/motif-dialog/motif-dialog.component';
 import { ConfirmationService } from '../../../core/services/confirmation.service';
+import { TableauCartesDirective } from '../../../shared/tableau-cartes.directive';
 import { Component, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { DatePipe } from '@angular/common';
@@ -12,7 +13,7 @@ import { AppShellComponent } from '../../../core/layout/app-shell/app-shell.comp
 @Component({
   selector: 'app-membre-list',
   standalone: true,
-  imports: [RouterLink, MotifDialogComponent, FormsModule, DatePipe, AppShellComponent],
+  imports: [TableauCartesDirective, RouterLink, MotifDialogComponent, FormsModule, DatePipe, AppShellComponent],
   templateUrl: './membre-list.component.html',
   styleUrl: './membre-list.component.scss'
 })

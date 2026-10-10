@@ -344,10 +344,78 @@ a { color: inherit; }
 }
 
 @media (max-width: 700px) {
+  /* Tableaux en cartes sur telephone : une ligne = une carte "libelle : valeur", boutons
+     d'action visibles en bas de carte (les libelles viennent de TableauCartesDirective). */
   .tableau {
     display: block;
-    overflow-x: auto;
-    white-space: nowrap;
+    background: transparent;
+    border: none;
+    box-shadow: none;
+    overflow: visible;
+
+    thead { display: none; }
+    tbody { display: block; }
+
+    tbody tr {
+      display: block;
+      background: #fff;
+      border: 1px solid var(--couleur-bordure);
+      border-radius: var(--rayon);
+      box-shadow: var(--ombre-carte);
+      margin-bottom: 12px;
+      padding: 6px 14px;
+
+      &:hover { background: #fff; }
+    }
+
+    td, tbody tr:last-child td {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 9px 0;
+      border-bottom: 1px solid var(--couleur-bordure);
+      text-align: right;
+      white-space: normal;
+      word-break: break-word;
+    }
+
+    td::before {
+      content: attr(data-label);
+      flex-shrink: 0;
+      max-width: 45%;
+      text-align: left;
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: var(--couleur-texte-att);
+    }
+
+    td[data-label=""]::before { display: none; }
+
+    td:last-child { border-bottom: none; }
+
+    /* Colonne d'actions : pleine largeur, boutons cote a cote et assez grands pour le doigt */
+    td.actions {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: flex-start;
+      gap: 8px;
+      padding-top: 12px;
+    }
+
+    td.actions button,
+    td.actions a {
+      min-height: 40px;
+      display: inline-flex;
+      align-items: center;
+      padding: 8px 14px;
+    }
+  }
+
+  .pagination button {
+    min-height: 40px;
   }
 
   .page {

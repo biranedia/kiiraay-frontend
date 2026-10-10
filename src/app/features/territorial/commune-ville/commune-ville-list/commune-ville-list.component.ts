@@ -1,4 +1,5 @@
 import { ConfirmationService } from '../../../../core/services/confirmation.service';
+import { TableauCartesDirective } from '../../../../shared/tableau-cartes.directive';
 import { Component, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { CommuneVille } from '../../../../core/models/territorial.model';
@@ -9,7 +10,7 @@ import { AppShellComponent } from '../../../../core/layout/app-shell/app-shell.c
 @Component({
   selector: 'app-commune-ville-list',
   standalone: true,
-  imports: [RouterLink, AppShellComponent],
+  imports: [TableauCartesDirective, RouterLink, AppShellComponent],
   templateUrl: './commune-ville-list.component.html',
   styleUrl: './commune-ville-list.component.scss'
 })

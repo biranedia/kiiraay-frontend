@@ -2,6 +2,7 @@ import { DatePipe } from '@angular/common';
 import { QrCodeService } from '../../../core/services/qrcode.service';
 import { MotifDialogComponent } from '../../../shared/motif-dialog/motif-dialog.component';
 import { ConfirmationService } from '../../../core/services/confirmation.service';
+import { TableauCartesDirective } from '../../../shared/tableau-cartes.directive';
 import { Component, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { Cellule } from '../../../core/models/cellule.model';
@@ -12,7 +13,7 @@ import { AppShellComponent } from '../../../core/layout/app-shell/app-shell.comp
 @Component({
   selector: 'app-cellule-list',
   standalone: true,
-  imports: [RouterLink, MotifDialogComponent, DatePipe, AppShellComponent],
+  imports: [TableauCartesDirective, RouterLink, MotifDialogComponent, DatePipe, AppShellComponent],
   templateUrl: './cellule-list.component.html',
   styleUrl: './cellule-list.component.scss'
 })

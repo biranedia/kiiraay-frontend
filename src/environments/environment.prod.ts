@@ -1,4 +1,5 @@
 export const environment = {
   production: true,
-  apiUrl: 'https://api.kiiraay.sn/api' // A adapter avec la vraie URL du backend en production
+  // Meme domaine que le frontend : Nginx redirige /api vers le backend (pas de CORS)
+  apiUrl: '/api'
 };

@@ -1,4 +1,5 @@
 import { ConfirmationService } from '../../../core/services/confirmation.service';
+import { TableauCartesDirective } from '../../../shared/tableau-cartes.directive';
 import { Component, inject, signal } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { Mouvement } from '../../../core/models/mouvement.model';
@@ -9,7 +10,7 @@ import { AppShellComponent } from '../../../core/layout/app-shell/app-shell.comp
 @Component({
   selector: 'app-mouvement-list',
   standalone: true,
-  imports: [RouterLink, AppShellComponent],
+  imports: [TableauCartesDirective, RouterLink, AppShellComponent],
   templateUrl: './mouvement-list.component.html',
   styleUrl: './mouvement-list.component.scss'
 })

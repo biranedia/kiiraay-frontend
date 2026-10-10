@@ -331,6 +331,12 @@ interface LigneStatNiveau {
       flex-shrink: 0;
     }
     .infos-profil { min-width: 0; flex: 1; }
+    /* Telephone : le bouton passe sous le profil au lieu de chevaucher les badges */
+    @media (max-width: 600px) {
+      .bandeau-profil { flex-wrap: wrap; padding: 18px; gap: 14px; }
+      .bouton-mdp { width: 100%; min-height: 40px; }
+      .onglets-niveau button { min-height: 36px; padding: 6px 14px; }
+    }
     .nom-utilisateur { margin: 0 0 8px; font-size: 1.15rem; font-weight: 700; color: #fff; text-transform: capitalize; }
     .badges-roles { display: flex; gap: 8px; flex-wrap: wrap; }
     .bouton-mdp {

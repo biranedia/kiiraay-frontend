@@ -1,3 +1,4 @@
+import { TableauCartesDirective } from '../../../shared/tableau-cartes.directive';
 import { Component, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { Responsable } from '../../../core/models/comite.model';
@@ -8,7 +9,7 @@ import { AppShellComponent } from '../../../core/layout/app-shell/app-shell.comp
 @Component({
   selector: 'app-responsable-list',
   standalone: true,
-  imports: [RouterLink, AppShellComponent],
+  imports: [TableauCartesDirective, RouterLink, AppShellComponent],
   templateUrl: './responsable-list.component.html',
   styleUrl: './responsable-list.component.scss'
 })

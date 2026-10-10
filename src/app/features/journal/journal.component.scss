@@ -61,3 +61,12 @@
   font-size: 0.82rem;
 }
 
+
+/* Telephone : filtres empiles en pleine largeur (evite tout debordement horizontal) */
+@media (max-width: 700px) {
+  .barre-filtres {
+    input, select, .champ-date { flex: 1 1 100%; min-width: 0; }
+    .champ-date input { flex: 1; }
+    button { min-height: 40px; }
+  }
+}
