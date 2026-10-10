@@ -4,6 +4,7 @@ import { AuthService } from '../../core/services/auth.service';
 import { StatistiquesService } from '../../core/services/statistiques.service';
 import { StatistiquesDepartementales } from '../../core/models/statistiques.model';
 import { Observable, map } from 'rxjs';
+import { RapportPdfService } from '../../core/services/rapport-pdf.service';
 import { AppShellComponent } from '../../core/layout/app-shell/app-shell.component';
 
 // Libelles et regroupement lisibles pour chaque permission technique (code) : evite d'afficher
@@ -98,7 +99,15 @@ interface LigneStatNiveau {
       </section>
 
       @if (authService.possede('TABLEAU_BORD_LIRE')) {
-        <p class="section-titre">Vue departementale</p>
+        <div class="ligne-section">
+          <p class="section-titre">Vue departementale</p>
+          <button type="button" class="bouton-secondaire" (click)="telechargerRapport()" [disabled]="enGenerationRapport()">
+            {{ enGenerationRapport() ? 'Generation...' : 'Rapport PDF' }}
+          </button>
+        </div>
+        @if (erreurRapport()) {
+          <p class="erreur-stats">{{ erreurRapport() }}</p>
+        }
 
         @if (chargementStats()) {
           <p class="chargement-stats">Chargement des statistiques...</p>
@@ -445,6 +454,8 @@ interface LigneStatNiveau {
     .entete-tableau h3 { margin: 0; font-size: 0.92rem; font-weight: 700; color: #16233f; }
     .chargement-inline { font-size: 0.78rem; color: #6b7280; }
     .tableau-scroll { overflow-x: auto; }
+    .ligne-section { display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; }
+    .ligne-section .section-titre { margin-bottom: 0; }
     .onglets-niveau { display: flex; gap: 6px; flex-wrap: wrap; }
     .onglets-niveau button {
       border: 1px solid #e3e7ee; background: #fff; color: #16233f; border-radius: 999px;
@@ -478,6 +489,7 @@ export class DashboardComponent {
   protected readonly authService = inject(AuthService);
   private readonly statistiquesService = inject(StatistiquesService);
   private readonly router = inject(Router);
+  private readonly rapportPdfService = inject(RapportPdfService);
   protected readonly ICONES = ICONES;
 
   protected readonly stats = signal<StatistiquesDepartementales | null>(null);
@@ -555,6 +567,21 @@ export class DashboardComponent {
         this.chargementNiveau.set(false);
       }
     });
+  }
+
+  protected readonly enGenerationRapport = signal(false);
+  protected readonly erreurRapport = signal<string | null>(null);
+
+  protected async telechargerRapport(): Promise<void> {
+    this.enGenerationRapport.set(true);
+    this.erreurRapport.set(null);
+    try {
+      await this.rapportPdfService.genererRapportTerritorial(this.authService.utilisateur()?.login ?? 'inconnu');
+    } catch {
+      this.erreurRapport.set('Impossible de generer le rapport PDF.');
+    } finally {
+      this.enGenerationRapport.set(false);
+    }
   }
 
   protected allerVersChangementMotDePasse(): void {
