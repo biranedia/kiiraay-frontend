@@ -40,6 +40,7 @@
               }
             </td>
             <td class="actions">
+              <button type="button" class="bouton-lien" (click)="afficherQrCode(comite.id)">QR code</button>
               @if (peutGerer()) {
                 <a [routerLink]="['/comite/comites', comite.id, 'modifier']">Modifier</a>
                 <button type="button" class="lien-danger" (click)="supprimer(comite)">Supprimer</button>

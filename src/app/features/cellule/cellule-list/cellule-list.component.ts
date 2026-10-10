@@ -1,4 +1,5 @@
 import { DatePipe } from '@angular/common';
+import { QrCodeService } from '../../../core/services/qrcode.service';
 import { Component, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { Cellule } from '../../../core/models/cellule.model';
@@ -15,6 +16,7 @@ import { AppShellComponent } from '../../../core/layout/app-shell/app-shell.comp
 })
 export class CelluleListComponent {
   private readonly celluleService = inject(CelluleService);
+  private readonly qrCodeService = inject(QrCodeService);
   private readonly authService = inject(AuthService);
 
   readonly cellules = signal<Cellule[]>([]);
@@ -108,6 +110,12 @@ export class CelluleListComponent {
     this.celluleService.supprimer(cellule.id).subscribe({
       next: () => this.charger(),
       error: () => this.messageErreur.set('Suppression impossible pour cette cellule.')
+    });
+  }
+
+  afficherQrCode(id: number): void {
+    this.qrCodeService.ouvrir('cellules', id).subscribe({
+      error: () => this.messageErreur.set('Impossible de generer le QR code.')
     });
   }
 }

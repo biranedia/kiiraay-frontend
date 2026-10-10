@@ -44,6 +44,7 @@
               </a>
             </td>
             <td class="actions">
+              <button type="button" class="bouton-lien" (click)="afficherQrCode(cellule.id)">QR code</button>
               <a [routerLink]="['/cellule/cellules', cellule.id, 'mouvements']">Mouvements</a>
               @if (peutModifier(cellule)) {
                 <a [routerLink]="['/cellule/cellules', cellule.id, 'modifier']">Modifier</a>

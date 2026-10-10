@@ -212,6 +212,11 @@ export const routes: Routes = [
       import('./features/cellule/mouvement-form/mouvement-form.component').then((m) => m.MouvementFormComponent)
   },
   {
+    path: 'scanner',
+    canActivate: [authGuard],
+    loadComponent: () => import('./features/scanner/scanner.component').then((m) => m.ScannerComponent)
+  },
+  {
     path: 'journal',
     canActivate: [authGuard],
     loadComponent: () => import('./features/journal/journal.component').then((m) => m.JournalComponent)

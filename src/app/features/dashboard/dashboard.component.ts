@@ -2,7 +2,8 @@ import { Component, computed, inject, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from '../../core/services/auth.service';
 import { StatistiquesService } from '../../core/services/statistiques.service';
-import { StatistiquesCommune, StatistiquesDepartementales } from '../../core/models/statistiques.model';
+import { StatistiquesDepartementales } from '../../core/models/statistiques.model';
+import { Observable, map } from 'rxjs';
 import { AppShellComponent } from '../../core/layout/app-shell/app-shell.component';
 
 // Libelles et regroupement lisibles pour chaque permission technique (code) : evite d'afficher
@@ -61,6 +62,20 @@ const ICONES: Record<string, string> = {
   utilisateur: 'M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8Zm0 2c-4.4 0-8 2.2-8 5v3h16v-3c0-2.8-3.6-5-8-5Zm7-9 1.5 1.5L17 9l3 3-1.5 1.5L15 10l3-3-1.5-1.5L19 5Z',
   mouvement: 'M13 3 4 14h6l-1 7 9-11h-6l1-7Z'
 };
+
+type NiveauTerritorial = 'arrondissement' | 'commune' | 'localite';
+
+// Ligne de tableau commune aux trois niveaux territoriaux
+interface LigneStatNiveau {
+  id: number;
+  nom: string;
+  sousNiveaux: string;
+  nombreCellules: number;
+  nombreComites: number;
+  comitesComplets: number;
+  tauxRemplissageMoyen: number;
+  nombreMembres: number;
+}
 
 @Component({
   selector: 'app-dashboard',
@@ -204,22 +219,28 @@ const ICONES: Record<string, string> = {
 
           <div class="carte-tableau">
             <div class="entete-tableau">
-              <h3>Vue par commune / ville</h3>
-              @if (chargementCommunes()) {
-                <span class="chargement-inline">Chargement...</span>
-              }
+              <h3>Vue par niveau territorial</h3>
+              <div class="onglets-niveau">
+                @for (n of NIVEAUX; track n.code) {
+                  <button type="button" [class.actif]="niveau() === n.code" (click)="choisirNiveau(n.code)">{{ n.libelle }}</button>
+                }
+              </div>
             </div>
-            @if (erreurCommunes()) {
-              <p class="erreur-stats">{{ erreurCommunes() }}</p>
-            } @else if (!chargementCommunes() && communes().length === 0) {
-              <p class="aucune-donnee">Aucune commune enregistree.</p>
-            } @else if (communes().length > 0) {
+            @if (chargementNiveau()) {
+              <p class="chargement-inline">Chargement...</p>
+            } @else if (erreurNiveau()) {
+              <p class="erreur-stats">{{ erreurNiveau() }}</p>
+            } @else if (lignesNiveau().length === 0) {
+              <p class="aucune-donnee">Aucune donnee pour ce niveau.</p>
+            } @else {
               <div class="tableau-scroll">
                 <table class="tableau-communes">
                   <thead>
                     <tr>
-                      <th>Commune / ville</th>
-                      <th>Localites</th>
+                      <th>{{ libelleNiveau() }}</th>
+                      @if (niveau() !== 'localite') {
+                        <th>Sous-niveaux</th>
+                      }
                       <th>Cellules</th>
                       <th>Comites</th>
                       <th>Remplissage moyen</th>
@@ -227,19 +248,21 @@ const ICONES: Record<string, string> = {
                     </tr>
                   </thead>
                   <tbody>
-                    @for (c of communes(); track c.id) {
+                    @for (l of lignesNiveau(); track l.id) {
                       <tr>
-                        <td>{{ c.nom }}</td>
-                        <td>{{ c.nombreLocalites }}</td>
-                        <td>{{ c.nombreCellules }}</td>
+                        <td>{{ l.nom }}</td>
+                        @if (niveau() !== 'localite') {
+                          <td>{{ l.sousNiveaux }}</td>
+                        }
+                        <td>{{ l.nombreCellules }}</td>
                         <td>
-                          {{ c.nombreComites }}
-                          @if (c.nombreComites > 0) {
-                            <span class="detail-comites">({{ c.comitesComplets }} complet{{ c.comitesComplets > 1 ? 's' : '' }})</span>
+                          {{ l.nombreComites }}
+                          @if (l.nombreComites > 0) {
+                            <span class="detail-comites">({{ l.comitesComplets }} complet{{ l.comitesComplets > 1 ? 's' : '' }})</span>
                           }
                         </td>
-                        <td>{{ c.tauxRemplissageMoyen }}%</td>
-                        <td>{{ c.nombreMembres }}</td>
+                        <td>{{ l.tauxRemplissageMoyen }}%</td>
+                        <td>{{ l.nombreMembres }}</td>
                       </tr>
                     }
                   </tbody>
@@ -417,10 +440,16 @@ const ICONES: Record<string, string> = {
       box-shadow: 0 1px 2px rgba(16, 24, 40, 0.04), 0 1px 3px rgba(16, 24, 40, 0.06);
       margin-bottom: 32px;
     }
-    .entete-tableau { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 14px; }
+    .entete-tableau { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px; margin-bottom: 14px; }
     .entete-tableau h3 { margin: 0; font-size: 0.92rem; font-weight: 700; color: #16233f; }
     .chargement-inline { font-size: 0.78rem; color: #6b7280; }
     .tableau-scroll { overflow-x: auto; }
+    .onglets-niveau { display: flex; gap: 6px; flex-wrap: wrap; }
+    .onglets-niveau button {
+      border: 1px solid #e3e7ee; background: #fff; color: #16233f; border-radius: 999px;
+      padding: 5px 12px; font-size: 0.8rem; font-weight: 600; cursor: pointer;
+    }
+    .onglets-niveau button.actif { background: #1f7a8c; border-color: #1f7a8c; color: #fff; }
     .tableau-communes { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
     .tableau-communes th {
       text-align: left;
@@ -454,14 +483,23 @@ export class DashboardComponent {
   protected readonly chargementStats = signal(false);
   protected readonly erreurStats = signal<string | null>(null);
 
-  protected readonly communes = signal<StatistiquesCommune[]>([]);
-  protected readonly chargementCommunes = signal(false);
-  protected readonly erreurCommunes = signal<string | null>(null);
+  // Vue par niveau territorial (arrondissement / commune / localite) : chaque niveau est
+  // charge a la premiere selection puis garde en memoire.
+  protected readonly NIVEAUX: { code: NiveauTerritorial; libelle: string }[] = [
+    { code: 'arrondissement', libelle: 'Arrondissement' },
+    { code: 'commune', libelle: 'Commune / ville' },
+    { code: 'localite', libelle: 'Localite' }
+  ];
+  protected readonly niveau = signal<NiveauTerritorial>('commune');
+  protected readonly lignesNiveau = signal<LigneStatNiveau[]>([]);
+  protected readonly chargementNiveau = signal(false);
+  protected readonly erreurNiveau = signal<string | null>(null);
+  private readonly cacheNiveaux = new Map<NiveauTerritorial, LigneStatNiveau[]>();
 
   constructor() {
     if (this.authService.possede('TABLEAU_BORD_LIRE')) {
       this.chargerStatistiques();
-      this.chargerCommunes();
+      this.choisirNiveau('commune');
     }
   }
 
@@ -480,17 +518,40 @@ export class DashboardComponent {
     });
   }
 
-  private chargerCommunes(): void {
-    this.chargementCommunes.set(true);
-    this.erreurCommunes.set(null);
-    this.statistiquesService.vueParCommunes().subscribe({
-      next: (donnees) => {
-        this.communes.set(donnees);
-        this.chargementCommunes.set(false);
+  protected libelleNiveau(): string {
+    return this.NIVEAUX.find((n) => n.code === this.niveau())?.libelle ?? '';
+  }
+
+  protected choisirNiveau(niveau: NiveauTerritorial): void {
+    this.niveau.set(niveau);
+    this.erreurNiveau.set(null);
+    const enCache = this.cacheNiveaux.get(niveau);
+    if (enCache) {
+      this.lignesNiveau.set(enCache);
+      return;
+    }
+    this.chargementNiveau.set(true);
+    // Chaque niveau est converti dans un format de ligne commun au tableau
+    const source: Observable<LigneStatNiveau[]> =
+      niveau === 'arrondissement'
+        ? this.statistiquesService.vueParArrondissements().pipe(map((liste) => liste.map((a) => ({
+            ...a, sousNiveaux: `${a.nombreCommunesVilles} commune(s), ${a.nombreLocalites} localite(s)` }))))
+        : niveau === 'commune'
+          ? this.statistiquesService.vueParCommunes().pipe(map((liste) => liste.map((c) => ({
+              ...c, sousNiveaux: `${c.nombreLocalites} localite(s)` }))))
+          : this.statistiquesService.vueParLocalites().pipe(map((liste) => liste.map((l) => ({ ...l, sousNiveaux: '' }))));
+    source.subscribe({
+      next: (lignes) => {
+        this.cacheNiveaux.set(niveau, lignes);
+        // Ignore une reponse arrivee apres un changement d'onglet
+        if (this.niveau() === niveau) {
+          this.lignesNiveau.set(lignes);
+        }
+        this.chargementNiveau.set(false);
       },
       error: () => {
-        this.erreurCommunes.set('Impossible de charger la vue par commune.');
-        this.chargementCommunes.set(false);
+        this.erreurNiveau.set('Impossible de charger les statistiques de ce niveau.');
+        this.chargementNiveau.set(false);
       }
     });
   }

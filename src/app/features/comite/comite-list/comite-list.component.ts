@@ -1,3 +1,4 @@
+import { QrCodeService } from '../../../core/services/qrcode.service';
 import { Component, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { Comite } from '../../../core/models/comite.model';
@@ -14,6 +15,7 @@ import { AppShellComponent } from '../../../core/layout/app-shell/app-shell.comp
 })
 export class ComiteListComponent {
   private readonly comiteService = inject(ComiteService);
+  private readonly qrCodeService = inject(QrCodeService);
   private readonly authService = inject(AuthService);
 
   readonly comites = signal<Comite[]>([]);
@@ -50,6 +52,12 @@ export class ComiteListComponent {
     this.comiteService.supprimer(comite.id).subscribe({
       next: () => this.charger(),
       error: () => this.messageErreur.set('Suppression impossible pour ce comite.')
+    });
+  }
+
+  afficherQrCode(id: number): void {
+    this.qrCodeService.ouvrir('comites', id).subscribe({
+      error: () => this.messageErreur.set('Impossible de generer le QR code.')
     });
   }
 }

@@ -2,7 +2,12 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
-import { StatistiquesCommune, StatistiquesDepartementales } from '../models/statistiques.model';
+import {
+  StatistiquesArrondissement,
+  StatistiquesCommune,
+  StatistiquesDepartementales,
+  StatistiquesLocalite
+} from '../models/statistiques.model';
 
 @Injectable({ providedIn: 'root' })
 export class StatistiquesService {
@@ -15,5 +20,13 @@ export class StatistiquesService {
 
   vueParCommunes(): Observable<StatistiquesCommune[]> {
     return this.http.get<StatistiquesCommune[]>(`${this.baseUrl}/communes`);
+  }
+
+  vueParArrondissements(): Observable<StatistiquesArrondissement[]> {
+    return this.http.get<StatistiquesArrondissement[]>(`${this.baseUrl}/arrondissements`);
+  }
+
+  vueParLocalites(): Observable<StatistiquesLocalite[]> {
+    return this.http.get<StatistiquesLocalite[]>(`${this.baseUrl}/localites`);
   }
 }

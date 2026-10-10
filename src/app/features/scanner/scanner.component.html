@@ -1,0 +1,50 @@
+<app-shell titre="Scanner un QR code" sousTitre="Cellule, comite ou membre">
+  <div class="zone-scan">
+    @if (messageErreur()) {
+      <p class="message-erreur">{{ messageErreur() }}</p>
+    }
+
+    @if (resultat(); as r) {
+      <div class="carte-resultat">
+        <p class="type-resultat">{{ r.type === 'CELLULE' ? 'Cellule' : r.type === 'COMITE' ? 'Comite' : 'Membre' }}</p>
+        <p class="titre-resultat">{{ r.libelle }}</p>
+        <p class="code-resultat">{{ r.code }} · <span class="badge" [class]="'badge-' + r.statut.toLowerCase()">{{ r.statut }}</span></p>
+        @if (r.detail) {
+          <p class="detail-resultat">{{ r.detail }}</p>
+        }
+        <div class="actions-resultat">
+          @if (r.type === 'CELLULE') {
+            <a class="bouton-primaire" [routerLink]="['/cellule/cellules', r.id, 'bureau']">Bureau</a>
+            <a class="bouton-secondaire" [routerLink]="['/cellule/cellules', r.id, 'mouvements']">Mouvements</a>
+          } @else if (r.type === 'COMITE') {
+            <a class="bouton-primaire" routerLink="/comite/comites">Voir les comites</a>
+          } @else {
+            <a class="bouton-primaire" [routerLink]="['/membre/membres', r.id, 'modifier']">Ouvrir la fiche</a>
+          }
+          <button type="button" class="bouton-secondaire" (click)="nouveauScan()">Scanner un autre code</button>
+        </div>
+      </div>
+    } @else if (cameraActive()) {
+      <div class="cadre-video">
+        <video #video muted></video>
+        <div class="viseur"></div>
+      </div>
+      <p class="aide">Placez le QR code dans le cadre.</p>
+      <button type="button" class="bouton-secondaire" (click)="arreterCamera()">Arreter la camera</button>
+    } @else {
+      <button type="button" class="bouton-primaire bouton-camera" (click)="demarrerCamera()" [disabled]="enCours()">
+        Ouvrir la camera
+      </button>
+    }
+
+    @if (!resultat()) {
+      <div class="saisie-manuelle">
+        <label for="saisie">Ou saisir un code (ex. MBR-000123)</label>
+        <div class="ligne-saisie">
+          <input id="saisie" type="text" [(ngModel)]="saisieManuelle" (keyup.enter)="validerSaisie()" />
+          <button type="button" class="bouton-secondaire" (click)="validerSaisie()" [disabled]="enCours()">Rechercher</button>
+        </div>
+      </div>
+    }
+  </div>
+</app-shell>

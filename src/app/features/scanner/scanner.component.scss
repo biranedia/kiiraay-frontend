@@ -1,0 +1,96 @@
+.zone-scan {
+  max-width: 520px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 16px;
+}
+
+.bouton-camera {
+  padding: 16px;
+  font-size: 1rem;
+}
+
+.cadre-video {
+  position: relative;
+  border-radius: 12px;
+  overflow: hidden;
+  background: #000;
+
+  video {
+    width: 100%;
+    display: block;
+  }
+
+  .viseur {
+    position: absolute;
+    inset: 15%;
+    border: 3px solid rgba(255, 255, 255, 0.85);
+    border-radius: 12px;
+    box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.35);
+  }
+}
+
+.aide {
+  margin: 0;
+  text-align: center;
+  font-size: 0.85rem;
+  color: var(--couleur-texte-att);
+}
+
+.saisie-manuelle label {
+  display: block;
+  font-size: 0.82rem;
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+
+.ligne-saisie {
+  display: flex;
+  gap: 8px;
+
+  input {
+    flex: 1;
+    min-width: 0;
+    border: 1px solid var(--couleur-bordure);
+    border-radius: 8px;
+    padding: 10px 12px;
+    font-size: 0.95rem;
+  }
+}
+
+.carte-resultat {
+  background: #fff;
+  border: 1px solid var(--couleur-bordure);
+  border-radius: var(--rayon);
+  padding: 20px;
+  box-shadow: var(--ombre-carte);
+
+  p { margin: 0 0 6px; }
+}
+
+.type-resultat {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--couleur-texte-att);
+}
+
+.titre-resultat {
+  font-size: 1.15rem;
+  font-weight: 700;
+}
+
+.detail-resultat {
+  font-size: 0.88rem;
+  color: var(--couleur-texte-att);
+}
+
+.actions-resultat {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 14px;
+}

@@ -34,3 +34,29 @@ export interface StatistiquesCommune {
   tauxRemplissageMoyen: number;
   nombreMembres: number;
 }
+
+export interface StatistiquesArrondissement {
+  id: number;
+  nom: string;
+  code: string;
+  nombreCommunesVilles: number;
+  nombreLocalites: number;
+  nombreCellules: number;
+  nombreComites: number;
+  comitesComplets: number;
+  comitesIncomplets: number;
+  tauxRemplissageMoyen: number;
+  nombreMembres: number;
+}
+
+export interface StatistiquesLocalite {
+  id: number;
+  nom: string;
+  type: string;
+  nombreCellules: number;
+  nombreComites: number;
+  comitesComplets: number;
+  comitesIncomplets: number;
+  tauxRemplissageMoyen: number;
+  nombreMembres: number;
+}
