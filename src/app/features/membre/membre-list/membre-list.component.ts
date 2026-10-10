@@ -36,17 +36,33 @@ export class MembreListComponent {
   };
   readonly filtresActifs = signal(false);
 
+  // Pagination serveur : on ne charge jamais toute la base (des milliers de fiches)
+  readonly taillePage = 20;
+  readonly page = signal(0);
+  readonly totalPages = signal(0);
+  readonly totalElements = signal(0);
+
   constructor() {
-    this.charger();
+    this.charger(0);
   }
 
-  charger(): void {
+  // Recharge la page demandee (par defaut la page courante, ex. apres une validation)
+  // avec les filtres actifs s'il y en a.
+  charger(page: number = this.page()): void {
     this.enChargement.set(true);
     this.messageErreur.set(null);
-    this.filtresActifs.set(false);
-    this.membreService.listerTous().subscribe({
-      next: (membres) => {
-        this.membres.set(membres);
+    const criteres = this.filtresActifs() ? this.critereCourant() : {};
+    this.membreService.rechercherPage(criteres, page, this.taillePage).subscribe({
+      next: (resultat) => {
+        // Page devenue vide (ex. dernier element supprime) : on recule d'une page
+        if (resultat.contenu.length === 0 && resultat.page > 0) {
+          this.charger(resultat.page - 1);
+          return;
+        }
+        this.membres.set(resultat.contenu);
+        this.page.set(resultat.page);
+        this.totalPages.set(resultat.totalPages);
+        this.totalElements.set(resultat.totalElements);
         this.enChargement.set(false);
       },
       error: () => {
@@ -66,19 +82,8 @@ export class MembreListComponent {
   }
 
   rechercher(): void {
-    this.enChargement.set(true);
-    this.messageErreur.set(null);
     this.filtresActifs.set(true);
-    this.membreService.rechercher(this.critereCourant()).subscribe({
-      next: (membres) => {
-        this.membres.set(membres);
-        this.enChargement.set(false);
-      },
-      error: () => {
-        this.messageErreur.set('Impossible d\'effectuer la recherche.');
-        this.enChargement.set(false);
-      }
-    });
+    this.charger(0);
   }
 
   reinitialiserFiltres(): void {
@@ -86,7 +91,8 @@ export class MembreListComponent {
     this.filtres.prenom = '';
     this.filtres.telephone = '';
     this.filtres.statut = '';
-    this.charger();
+    this.filtresActifs.set(false);
+    this.charger(0);
   }
 
   peutExporter(): boolean {

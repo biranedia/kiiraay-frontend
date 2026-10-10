@@ -1,11 +1,4 @@
-// Reponse paginee generique renvoyee par le backend (PageResponse)
-export interface PageResponse<T> {
-  contenu: T[];
-  page: number;
-  taille: number;
-  totalElements: number;
-  totalPages: number;
-}
+export type { PageResponse } from './pagination.model';
 
 export interface EntreeJournal {
   id: number;

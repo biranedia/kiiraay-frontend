@@ -66,7 +66,7 @@
   @if (enChargement()) {
     <p>Chargement...</p>
   } @else if (membres().length === 0) {
-    <p>Aucun membre enregistre pour le moment.</p>
+    <p>{{ filtresActifs() ? 'Aucun membre ne correspond a ces criteres.' : 'Aucun membre enregistre pour le moment.' }}</p>
   } @else {
     <table class="tableau">
       <thead>
@@ -127,5 +127,11 @@
         }
       </tbody>
     </table>
+
+    <div class="pagination">
+      <button type="button" class="bouton-secondaire" [disabled]="page() === 0" (click)="charger(page() - 1)">Precedent</button>
+      <span>Page {{ page() + 1 }} / {{ totalPages() }} · {{ totalElements() }} membre(s)</span>
+      <button type="button" class="bouton-secondaire" [disabled]="page() + 1 >= totalPages()" (click)="charger(page() + 1)">Suivant</button>
+    </div>
   }
 </app-shell>

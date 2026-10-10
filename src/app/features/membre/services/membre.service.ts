@@ -3,6 +3,7 @@ import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from '../../../../environments/environment';
 import { HttpParams } from '@angular/common/http';
+import { PageResponse } from '../../../core/models/pagination.model';
 import { ImportMembresResponse, Membre, MembreCritereRecherche, MembreRequest } from '../../../core/models/membre.model';
 
 @Injectable({ providedIn: 'root' })
@@ -18,6 +19,12 @@ export class MembreService {
   // sont simplement omis de la requete (le backend les ignore alors).
   rechercher(criteres: MembreCritereRecherche): Observable<Membre[]> {
     return this.http.get<Membre[]>(`${this.baseUrl}/recherche`, { params: this.versParametres(criteres) });
+  }
+
+  // Liste paginee (ecran Membres) : memes criteres que rechercher(), plus page et taille
+  rechercherPage(criteres: MembreCritereRecherche, page: number, taille: number): Observable<PageResponse<Membre>> {
+    const params = this.versParametres(criteres).set('page', page).set('taille', taille);
+    return this.http.get<PageResponse<Membre>>(`${this.baseUrl}/page`, { params });
   }
 
   // Export CSV des membres correspondant aux memes criteres que rechercher(). Le blob est
