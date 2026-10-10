@@ -23,6 +23,11 @@ export interface Membre {
   photoVersoPresente: boolean;
   // Photo de profil (portrait) : donnee non sensible, visible par quiconque a MEMBRE_LIRE.
   photoProfilPresente: boolean;
+  // Tracabilite du workflow ("qui, quand") : null tant que l'etape n'a pas eu lieu
+  soumisPar: string | null;
+  dateSoumission: string | null;
+  decisionPar: string | null;
+  dateDecision: string | null;
 }
 
 export interface MembreRequest {

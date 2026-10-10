@@ -1,5 +1,6 @@
 import { Component, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { DatePipe } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { ImportMembresResponse, Membre, MembreCritereRecherche, StatutMembre } from '../../../core/models/membre.model';
 import { MembreService } from '../services/membre.service';
@@ -9,7 +10,7 @@ import { AppShellComponent } from '../../../core/layout/app-shell/app-shell.comp
 @Component({
   selector: 'app-membre-list',
   standalone: true,
-  imports: [RouterLink, FormsModule, AppShellComponent],
+  imports: [RouterLink, FormsModule, DatePipe, AppShellComponent],
   templateUrl: './membre-list.component.html',
   styleUrl: './membre-list.component.scss'
 })

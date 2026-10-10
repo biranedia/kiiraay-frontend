@@ -21,6 +21,11 @@ export interface Cellule {
   localiteNom: string;
   nombreMouvements: number;
   bureauConstitue: boolean;
+  // Tracabilite du workflow ("qui, quand") : null tant que l'etape n'a pas eu lieu
+  soumisPar: string | null;
+  dateSoumission: string | null;
+  decisionPar: string | null;
+  dateDecision: string | null;
 }
 
 export interface CelluleRequest {

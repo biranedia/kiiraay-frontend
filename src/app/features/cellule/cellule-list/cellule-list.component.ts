@@ -1,3 +1,4 @@
+import { DatePipe } from '@angular/common';
 import { Component, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { Cellule } from '../../../core/models/cellule.model';
@@ -8,7 +9,7 @@ import { AppShellComponent } from '../../../core/layout/app-shell/app-shell.comp
 @Component({
   selector: 'app-cellule-list',
   standalone: true,
-  imports: [RouterLink, AppShellComponent],
+  imports: [RouterLink, DatePipe, AppShellComponent],
   templateUrl: './cellule-list.component.html',
   styleUrl: './cellule-list.component.scss'
 })

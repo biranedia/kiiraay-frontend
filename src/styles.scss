@@ -374,3 +374,11 @@ a { color: inherit; }
     }
   }
 }
+
+/* Tracabilite du workflow affichee sous un statut ("par X le ...") */
+.trace-workflow {
+  display: block;
+  margin-top: 3px;
+  font-size: 0.74rem;
+  color: var(--couleur-texte-att);
+}

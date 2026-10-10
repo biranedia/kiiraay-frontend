@@ -31,7 +31,13 @@
             <td>{{ cellule.nom }}</td>
             <td>{{ cellule.type }}</td>
             <td>{{ cellule.localiteNom }}</td>
-            <td><span class="badge" [class]="'badge-' + cellule.statut.toLowerCase()">{{ cellule.statut }}</span></td>
+            <td><span class="badge" [class]="'badge-' + cellule.statut.toLowerCase()">{{ cellule.statut }}</span>
+              @if (cellule.decisionPar) {
+                <span class="trace-workflow">par {{ cellule.decisionPar }} le {{ cellule.dateDecision | date: 'dd/MM/yyyy HH:mm' }}</span>
+              } @else if (cellule.soumisPar) {
+                <span class="trace-workflow">soumis par {{ cellule.soumisPar }} le {{ cellule.dateSoumission | date: 'dd/MM/yyyy HH:mm' }}</span>
+              }
+            </td>
             <td>
               <a [routerLink]="['/cellule/cellules', cellule.id, 'bureau']">
                 {{ cellule.bureauConstitue ? 'Constitue' : 'Non constitue' }}

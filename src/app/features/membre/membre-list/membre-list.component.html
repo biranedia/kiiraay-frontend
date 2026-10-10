@@ -90,6 +90,11 @@
             <td>{{ membre.numeroCNI ?? '—' }}</td>
             <td>
               <span class="badge" [class]="'badge-' + membre.statut.toLowerCase()">{{ membre.statut }}</span>
+              @if (membre.decisionPar) {
+                <span class="trace-workflow">par {{ membre.decisionPar }} le {{ membre.dateDecision | date: 'dd/MM/yyyy HH:mm' }}</span>
+              } @else if (membre.soumisPar) {
+                <span class="trace-workflow">soumis par {{ membre.soumisPar }} le {{ membre.dateSoumission | date: 'dd/MM/yyyy HH:mm' }}</span>
+              }
               @if (membre.doublonPotentielDetecte) {
                 <span class="alerte-texte">Doublon potentiel</span>
               }
