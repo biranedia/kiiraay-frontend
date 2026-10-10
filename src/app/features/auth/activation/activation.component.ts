@@ -21,6 +21,8 @@ export class ActivationComponent implements OnInit {
   private readonly router = inject(Router);
 
   private token: string | null = null;
+  // Lien recu via "Mot de passe oublie" (textes adaptes)
+  protected readonly reinitialisation = this.route.snapshot.queryParamMap.get('type') === 'reinitialisation';
 
   // Etats de l'ecran : verification du lien en cours -> formulaire -> succes, ou lien invalide.
   readonly enVerification = signal(true);

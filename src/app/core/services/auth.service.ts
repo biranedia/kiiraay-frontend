@@ -79,6 +79,11 @@ export class AuthService {
     return this.http.get<InfoActivationResponse>(`${environment.apiUrl}/auth/activation/${token}`);
   }
 
+  // "Mot de passe oublie" : reponse identique que l'adresse existe ou non
+  demanderReinitialisation(email: string): Observable<{ message: string }> {
+    return this.http.post<{ message: string }>(`${environment.apiUrl}/auth/mot-de-passe-oublie`, { email });
+  }
+
   activerCompte(request: ActivationRequest): Observable<void> {
     return this.http.post<void>(`${environment.apiUrl}/auth/activer-compte`, request);
   }

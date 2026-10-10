@@ -1,0 +1,25 @@
+<div class="page-activation">
+  <div class="carte-activation">
+    <h1>KIIRAAY</h1>
+    @if (envoye()) {
+      <p class="sous-titre">Demande envoyee</p>
+      <p class="info">
+        Si un compte actif correspond a cette adresse, un email contenant un lien de reinitialisation
+        vient d'etre envoye. Le lien est valable 48 heures. Pensez a verifier vos courriers indesirables.
+      </p>
+      <a routerLink="/connexion">Retour a la connexion</a>
+    } @else {
+      <p class="sous-titre">Mot de passe oublie</p>
+      <p class="info">Saisissez l'adresse email de votre compte : vous recevrez un lien pour choisir un nouveau mot de passe.</p>
+      <form [formGroup]="formulaire" (ngSubmit)="soumettre()">
+        <label for="email">Adresse email</label>
+        <input id="email" type="email" formControlName="email" autocomplete="email" />
+        @if (messageErreur()) {
+          <p class="erreur">{{ messageErreur() }}</p>
+        }
+        <button type="submit" [disabled]="enCours()">{{ enCours() ? 'Envoi...' : 'Recevoir le lien' }}</button>
+      </form>
+      <a routerLink="/connexion">Retour a la connexion</a>
+    }
+  </div>
+</div>

@@ -15,6 +15,12 @@ export const routes: Routes = [
       import('./features/auth/activation/activation.component').then((m) => m.ActivationComponent)
   },
   {
+    // Publique : demande de reinitialisation du mot de passe
+    path: 'mot-de-passe-oublie',
+    loadComponent: () =>
+      import('./features/auth/mot-de-passe-oublie/mot-de-passe-oublie.component').then((m) => m.MotDePasseOublieComponent)
+  },
+  {
     path: 'utilisateurs',
     canActivate: [authGuard],
     loadComponent: () =>
