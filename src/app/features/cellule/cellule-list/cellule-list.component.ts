@@ -1,5 +1,6 @@
 import { DatePipe } from '@angular/common';
 import { QrCodeService } from '../../../core/services/qrcode.service';
+import { MotifDialogComponent } from '../../../shared/motif-dialog/motif-dialog.component';
 import { Component, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { Cellule } from '../../../core/models/cellule.model';
@@ -10,7 +11,7 @@ import { AppShellComponent } from '../../../core/layout/app-shell/app-shell.comp
 @Component({
   selector: 'app-cellule-list',
   standalone: true,
-  imports: [RouterLink, DatePipe, AppShellComponent],
+  imports: [RouterLink, MotifDialogComponent, DatePipe, AppShellComponent],
   templateUrl: './cellule-list.component.html',
   styleUrl: './cellule-list.component.scss'
 })
@@ -116,6 +117,65 @@ export class CelluleListComponent {
   afficherQrCode(id: number): void {
     this.qrCodeService.ouvrir('cellules', id).subscribe({
       error: () => this.messageErreur.set('Impossible de generer le QR code.')
+    });
+  }
+
+  // --- Fin du cycle de vie : suspension, reactivation, archivage, restauration ---
+
+  // Boite de saisie du motif ouverte pour une suspension ou un archivage
+  readonly dialogue = signal<{ action: 'suspendre' | 'archiver'; id: number; libelle: string } | null>(null);
+
+  peutSuspendre(x: Cellule): boolean {
+    return this.peutValider() && x.statut === 'VALIDEE';
+  }
+
+  peutReactiver(x: Cellule): boolean {
+    return this.peutValider() && x.statut === 'SUSPENDUE';
+  }
+
+  peutArchiver(x: Cellule): boolean {
+    return this.peutValider() && (['VALIDEE', 'NON_VALIDEE', 'SUSPENDUE'] as string[]).includes(x.statut);
+  }
+
+  peutRestaurer(x: Cellule): boolean {
+    return this.peutValider() && x.statut === 'INACTIVE';
+  }
+
+  ouvrirDialogue(action: 'suspendre' | 'archiver', x: Cellule): void {
+    this.dialogue.set({ action, id: x.id, libelle: `${x.code} - ${x.nom}` });
+  }
+
+  confirmerDialogue(motif: string): void {
+    const d = this.dialogue();
+    if (!d) {
+      return;
+    }
+    const appel = d.action === 'suspendre' ? this.celluleService.suspendre(d.id, motif) : this.celluleService.archiver(d.id, motif);
+    this.executer(d.id, appel, () => this.dialogue.set(null));
+  }
+
+  reactiver(x: Cellule): void {
+    this.executer(x.id, this.celluleService.reactiver(x.id));
+  }
+
+  restaurer(x: Cellule): void {
+    if (confirm(`Restaurer ${`${x.code} - ${x.nom}`} ? La fiche repassera en brouillon et devra etre resoumise.`)) {
+      this.executer(x.id, this.celluleService.restaurer(x.id));
+    }
+  }
+
+  private executer(id: number, appel: import('rxjs').Observable<Cellule>, apresSucces?: () => void): void {
+    this.enAction.set(id);
+    appel.subscribe({
+      next: () => {
+        this.enAction.set(null);
+        apresSucces?.();
+        this.charger();
+      },
+      error: (err) => {
+        this.enAction.set(null);
+        this.messageErreur.set(err?.error?.message ?? 'Action impossible sur cette cellule.');
+      }
     });
   }
 }

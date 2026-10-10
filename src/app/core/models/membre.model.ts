@@ -1,6 +1,6 @@
 export type Sexe = 'M' | 'F';
 
-export type StatutMembre = 'BROUILLON' | 'EN_ATTENTE' | 'VALIDE' | 'NON_VALIDE' | 'SUSPENDU';
+export type StatutMembre = 'BROUILLON' | 'EN_ATTENTE' | 'VALIDE' | 'NON_VALIDE' | 'SUSPENDU' | 'ARCHIVE';
 
 export interface Membre {
   id: number;
@@ -28,6 +28,8 @@ export interface Membre {
   dateSoumission: string | null;
   decisionPar: string | null;
   dateDecision: string | null;
+  // Motif de la derniere suspension ou du dernier archivage
+  motifStatut: string | null;
 }
 
 export interface MembreRequest {

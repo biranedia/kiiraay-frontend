@@ -14,6 +14,7 @@
       <option value="VALIDE">Valide</option>
       <option value="NON_VALIDE">Non valide</option>
       <option value="SUSPENDU">Suspendu</option>
+      <option value="ARCHIVE">Archive</option>
     </select>
     <button type="button" (click)="rechercher()">Rechercher</button>
     @if (filtresActifs()) {
@@ -90,6 +91,9 @@
             <td>{{ membre.numeroCNI ?? '—' }}</td>
             <td>
               <span class="badge" [class]="'badge-' + membre.statut.toLowerCase()">{{ membre.statut }}</span>
+              @if (membre.motifStatut) {
+                <span class="trace-workflow">Motif : {{ membre.motifStatut }}</span>
+              }
               @if (membre.decisionPar) {
                 <span class="trace-workflow">par {{ membre.decisionPar }} le {{ membre.dateDecision | date: 'dd/MM/yyyy HH:mm' }}</span>
               } @else if (membre.soumisPar) {
@@ -119,6 +123,18 @@
                 }
                 <button type="button" class="lien-danger" (click)="rejeter(membre)" [disabled]="enAction() === membre.id">Rejeter</button>
               }
+              @if (peutSuspendre(membre)) {
+                <button type="button" (click)="ouvrirDialogue('suspendre', membre)" [disabled]="enAction() === membre.id">Suspendre</button>
+              }
+              @if (peutReactiver(membre)) {
+                <button type="button" (click)="reactiver(membre)" [disabled]="enAction() === membre.id">Reactiver</button>
+              }
+              @if (peutArchiver(membre)) {
+                <button type="button" class="lien-danger" (click)="ouvrirDialogue('archiver', membre)" [disabled]="enAction() === membre.id">Archiver</button>
+              }
+              @if (peutRestaurer(membre)) {
+                <button type="button" (click)="restaurer(membre)" [disabled]="enAction() === membre.id">Restaurer</button>
+              }
               @if (peutGerer()) {
                 <button type="button" class="lien-danger" (click)="supprimer(membre)">Supprimer</button>
               }
@@ -133,5 +149,15 @@
       <span>Page {{ page() + 1 }} / {{ totalPages() }} · {{ totalElements() }} membre(s)</span>
       <button type="button" class="bouton-secondaire" [disabled]="page() + 1 >= totalPages()" (click)="charger(page() + 1)">Suivant</button>
     </div>
+  }
+
+  @if (dialogue(); as d) {
+    <app-motif-dialog
+      [titre]="d.action === 'suspendre' ? 'Suspendre ' + d.libelle : 'Archiver ' + d.libelle"
+      [description]="d.action === 'suspendre' ? 'La fiche restera visible mais signalee comme suspendue.' : 'La fiche sera masquee des listes par defaut. Elle reste consultable avec le filtre et peut etre restauree.'"
+      [libelleBouton]="d.action === 'suspendre' ? 'Suspendre' : 'Archiver'"
+      [enCours]="enAction() !== null"
+      (valider)="confirmerDialogue($event)"
+      (annuler)="dialogue.set(null)" />
   }
 </app-shell>

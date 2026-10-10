@@ -1,3 +1,4 @@
+import { MotifDialogComponent } from '../../../shared/motif-dialog/motif-dialog.component';
 import { Component, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { DatePipe } from '@angular/common';
@@ -10,7 +11,7 @@ import { AppShellComponent } from '../../../core/layout/app-shell/app-shell.comp
 @Component({
   selector: 'app-membre-list',
   standalone: true,
-  imports: [RouterLink, FormsModule, DatePipe, AppShellComponent],
+  imports: [RouterLink, MotifDialogComponent, FormsModule, DatePipe, AppShellComponent],
   templateUrl: './membre-list.component.html',
   styleUrl: './membre-list.component.scss'
 })
@@ -256,6 +257,65 @@ export class MembreListComponent {
     this.membreService.supprimer(membre.id).subscribe({
       next: () => this.charger(),
       error: () => this.messageErreur.set('Suppression impossible pour ce membre.')
+    });
+  }
+
+  // --- Fin du cycle de vie : suspension, reactivation, archivage, restauration ---
+
+  // Boite de saisie du motif ouverte pour une suspension ou un archivage
+  readonly dialogue = signal<{ action: 'suspendre' | 'archiver'; id: number; libelle: string } | null>(null);
+
+  peutSuspendre(x: Membre): boolean {
+    return this.peutValider() && x.statut === 'VALIDE';
+  }
+
+  peutReactiver(x: Membre): boolean {
+    return this.peutValider() && x.statut === 'SUSPENDU';
+  }
+
+  peutArchiver(x: Membre): boolean {
+    return this.peutValider() && (['VALIDE', 'NON_VALIDE', 'SUSPENDU'] as string[]).includes(x.statut);
+  }
+
+  peutRestaurer(x: Membre): boolean {
+    return this.peutValider() && x.statut === 'ARCHIVE';
+  }
+
+  ouvrirDialogue(action: 'suspendre' | 'archiver', x: Membre): void {
+    this.dialogue.set({ action, id: x.id, libelle: `${x.prenom} ${x.nom}` });
+  }
+
+  confirmerDialogue(motif: string): void {
+    const d = this.dialogue();
+    if (!d) {
+      return;
+    }
+    const appel = d.action === 'suspendre' ? this.membreService.suspendre(d.id, motif) : this.membreService.archiver(d.id, motif);
+    this.executer(d.id, appel, () => this.dialogue.set(null));
+  }
+
+  reactiver(x: Membre): void {
+    this.executer(x.id, this.membreService.reactiver(x.id));
+  }
+
+  restaurer(x: Membre): void {
+    if (confirm(`Restaurer ${`${x.prenom} ${x.nom}`} ? La fiche repassera en brouillon et devra etre resoumise.`)) {
+      this.executer(x.id, this.membreService.restaurer(x.id));
+    }
+  }
+
+  private executer(id: number, appel: import('rxjs').Observable<Membre>, apresSucces?: () => void): void {
+    this.enAction.set(id);
+    appel.subscribe({
+      next: () => {
+        this.enAction.set(null);
+        apresSucces?.();
+        this.charger();
+      },
+      error: (err) => {
+        this.enAction.set(null);
+        this.messageErreur.set(err?.error?.message ?? 'Action impossible sur ce membre.');
+      }
     });
   }
 }

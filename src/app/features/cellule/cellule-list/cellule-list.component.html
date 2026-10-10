@@ -32,6 +32,9 @@
             <td>{{ cellule.type }}</td>
             <td>{{ cellule.localiteNom }}</td>
             <td><span class="badge" [class]="'badge-' + cellule.statut.toLowerCase()">{{ cellule.statut }}</span>
+              @if (cellule.motifStatut) {
+                <span class="trace-workflow">Motif : {{ cellule.motifStatut }}</span>
+              }
               @if (cellule.decisionPar) {
                 <span class="trace-workflow">par {{ cellule.decisionPar }} le {{ cellule.dateDecision | date: 'dd/MM/yyyy HH:mm' }}</span>
               } @else if (cellule.soumisPar) {
@@ -56,6 +59,18 @@
                 <button type="button" (click)="valider(cellule)" [disabled]="enAction() === cellule.id">Valider</button>
                 <button type="button" class="lien-danger" (click)="rejeter(cellule)" [disabled]="enAction() === cellule.id">Rejeter</button>
               }
+              @if (peutSuspendre(cellule)) {
+                <button type="button" (click)="ouvrirDialogue('suspendre', cellule)" [disabled]="enAction() === cellule.id">Suspendre</button>
+              }
+              @if (peutReactiver(cellule)) {
+                <button type="button" (click)="reactiver(cellule)" [disabled]="enAction() === cellule.id">Reactiver</button>
+              }
+              @if (peutArchiver(cellule)) {
+                <button type="button" class="lien-danger" (click)="ouvrirDialogue('archiver', cellule)" [disabled]="enAction() === cellule.id">Archiver</button>
+              }
+              @if (peutRestaurer(cellule)) {
+                <button type="button" (click)="restaurer(cellule)" [disabled]="enAction() === cellule.id">Restaurer</button>
+              }
               @if (peutGerer()) {
                 <button type="button" class="lien-danger" (click)="supprimer(cellule)">Supprimer</button>
               }
@@ -64,5 +79,15 @@
         }
       </tbody>
     </table>
+  }
+
+  @if (dialogue(); as d) {
+    <app-motif-dialog
+      [titre]="d.action === 'suspendre' ? 'Suspendre ' + d.libelle : 'Archiver ' + d.libelle"
+      [description]="d.action === 'suspendre' ? 'La cellule restera visible mais signalee comme suspendue.' : 'La cellule passera au statut inactive (archivee). Elle pourra etre restauree.'"
+      [libelleBouton]="d.action === 'suspendre' ? 'Suspendre' : 'Archiver'"
+      [enCours]="enAction() !== null"
+      (valider)="confirmerDialogue($event)"
+      (annuler)="dialogue.set(null)" />
   }
 </app-shell>

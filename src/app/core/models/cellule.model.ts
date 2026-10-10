@@ -26,6 +26,8 @@ export interface Cellule {
   dateSoumission: string | null;
   decisionPar: string | null;
   dateDecision: string | null;
+  // Motif de la derniere suspension ou du dernier archivage
+  motifStatut: string | null;
 }
 
 export interface CelluleRequest {

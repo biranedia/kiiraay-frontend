@@ -44,7 +44,8 @@ const LIBELLES_STATUTS: Record<string, string> = {
   NON_VALIDE: 'Non valides',
   SUSPENDUE: 'Suspendues',
   SUSPENDU: 'Suspendus',
-  INACTIVE: 'Inactives'
+  INACTIVE: 'Inactives (archivees)',
+  ARCHIVE: 'Archives'
 };
 
 const GROUPES: { titre: string; icone: string; codes: string[] }[] = [

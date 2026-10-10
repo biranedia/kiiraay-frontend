@@ -122,4 +122,21 @@ export class MembreService {
   genererQrCode(id: number): Observable<Blob> {
     return this.http.get(`${this.baseUrl}/${id}/qrcode`, { responseType: 'blob' });
   }
+
+  // Fin du cycle de vie (reserve a ceux qui valident). Motif obligatoire pour suspendre/archiver.
+  suspendre(id: number, motif: string): Observable<Membre> {
+    return this.http.post<Membre>(`${this.baseUrl}/${id}/suspendre`, { motif });
+  }
+
+  reactiver(id: number): Observable<Membre> {
+    return this.http.post<Membre>(`${this.baseUrl}/${id}/reactiver`, {});
+  }
+
+  archiver(id: number, motif: string): Observable<Membre> {
+    return this.http.post<Membre>(`${this.baseUrl}/${id}/archiver`, { motif });
+  }
+
+  restaurer(id: number): Observable<Membre> {
+    return this.http.post<Membre>(`${this.baseUrl}/${id}/restaurer`, {});
+  }
 }

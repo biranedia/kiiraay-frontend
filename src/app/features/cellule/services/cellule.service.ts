@@ -40,4 +40,21 @@ export class CelluleService {
   supprimer(id: number): Observable<void> {
     return this.http.delete<void>(`${this.baseUrl}/${id}`);
   }
+
+  // Fin du cycle de vie (reserve a ceux qui valident). Motif obligatoire pour suspendre/archiver.
+  suspendre(id: number, motif: string): Observable<Cellule> {
+    return this.http.post<Cellule>(`${this.baseUrl}/${id}/suspendre`, { motif });
+  }
+
+  reactiver(id: number): Observable<Cellule> {
+    return this.http.post<Cellule>(`${this.baseUrl}/${id}/reactiver`, {});
+  }
+
+  archiver(id: number, motif: string): Observable<Cellule> {
+    return this.http.post<Cellule>(`${this.baseUrl}/${id}/archiver`, { motif });
+  }
+
+  restaurer(id: number): Observable<Cellule> {
+    return this.http.post<Cellule>(`${this.baseUrl}/${id}/restaurer`, {});
+  }
 }
