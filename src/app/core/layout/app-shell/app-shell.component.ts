@@ -8,7 +8,8 @@ interface LienNav {
   libelle: string;
   route: string;
   icone: string;
-  autoriteRequise?: string;
+  // Une autorite, ou une liste dont UNE seule suffit
+  autoriteRequise?: string | string[];
 }
 
 interface SectionNav {
@@ -24,6 +25,7 @@ const ICONES: Record<string, string> = {
   cellule: 'M12 12a5 5 0 1 0 0-10 5 5 0 0 0 0 10Zm0 2c-4.4 0-8 2.2-8 5v3h16v-3c0-2.8-3.6-5-8-5Z',
   comite: 'M8 11a3 3 0 1 0 0-6 3 3 0 0 0 0 6Zm8 0a3 3 0 1 0 0-6 3 3 0 0 0 0 6ZM2 20v-2c0-2.2 2.7-4 6-4s6 1.8 6 4v2H2Zm12-4c2.5.4 4 1.8 4 4v2h4v-2c0-2-2.3-3.6-4-4Z',
   membre: 'M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8Zm0 2c-4.4 0-8 2.2-8 5v3h16v-3c0-2.8-3.6-5-8-5Z',
+  journal: 'M6 2h9l5 5v15H6V2Zm8 1.5V8h4.5L14 3.5ZM8 11h8v1.5H8V11Zm0 4h8v1.5H8V15Zm0 4h5v1.5H8V19Z',
   utilisateur: 'M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8Zm0 2c-4.4 0-8 2.2-8 5v3h16v-3c0-2.8-3.6-5-8-5Zm7-9 1.5 1.5L17 9l3 3-1.5 1.5L15 10l3-3-1.5-1.5L19 5Z'
 };
 
@@ -44,16 +46,21 @@ const SECTIONS: SectionNav[] = [
   {
     titre: 'Organisation',
     liens: [
-      { libelle: 'Cellules', route: '/cellule/cellules', icone: 'cellule', autoriteRequise: 'CELLULE_GERER' },
+      // Le validateur doit aussi y acceder pour valider/rejeter les cellules
+      { libelle: 'Cellules', route: '/cellule/cellules', icone: 'cellule', autoriteRequise: ['CELLULE_GERER', 'CELLULE_VALIDER'] },
       { libelle: 'Responsables', route: '/comite/responsables', icone: 'comite', autoriteRequise: 'COMITE_GERER' },
       { libelle: 'Comites', route: '/comite/comites', icone: 'comite', autoriteRequise: 'COMITE_GERER' }
     ]
   },
   {
-    titre: 'Membres & acces',
+    titre: 'Membres',
+    liens: [{ libelle: 'Membres', route: '/membre/membres', icone: 'membre', autoriteRequise: 'MEMBRE_LIRE' }]
+  },
+  {
+    titre: 'Administration',
     liens: [
-      { libelle: 'Membres', route: '/membre/membres', icone: 'membre', autoriteRequise: 'MEMBRE_LIRE' },
-      { libelle: 'Nouvel utilisateur', route: '/utilisateurs/nouveau', icone: 'utilisateur', autoriteRequise: 'ADMIN_GENERAL' }
+      { libelle: 'Utilisateurs', route: '/utilisateurs', icone: 'utilisateur', autoriteRequise: 'ADMIN_GENERAL' },
+      { libelle: "Journal d'activite", route: '/journal', icone: 'journal', autoriteRequise: 'ADMIN_GENERAL' }
     ]
   }
 ];
@@ -117,9 +124,17 @@ export class AppShellComponent implements OnInit {
     return SECTIONS
       .map((section) => ({
         ...section,
-        liens: section.liens.filter((l) => !l.autoriteRequise || this.authService.possede(l.autoriteRequise))
+        liens: section.liens.filter((l) => this.autorise(l.autoriteRequise))
       }))
       .filter((section) => section.liens.length > 0);
+  }
+
+  private autorise(autorite: string | string[] | undefined): boolean {
+    if (!autorite) {
+      return true;
+    }
+    const liste = Array.isArray(autorite) ? autorite : [autorite];
+    return liste.some((a) => this.authService.possede(a));
   }
 
   get utilisateurConnecte() {

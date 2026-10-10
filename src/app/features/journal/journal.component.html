@@ -1,0 +1,61 @@
+@if (accesRefuse) {
+  <div class="page">
+    <p class="message-erreur">Acces reserve a l'administrateur general.</p>
+  </div>
+} @else {
+<app-shell titre="Journal d'activite" sousTitre="Tracabilite des actions sensibles (lecture seule)">
+  <div class="barre-filtres">
+    <input type="text" placeholder="Utilisateur (login)" [(ngModel)]="filtres.login" (keyup.enter)="rechercher()" />
+    <select [(ngModel)]="filtres.action">
+      <option value="">Toutes les actions</option>
+      @for (action of actions(); track action) {
+        <option [value]="action">{{ action }}</option>
+      }
+    </select>
+    <label class="champ-date">Du <input type="date" [(ngModel)]="filtres.du" /></label>
+    <label class="champ-date">Au <input type="date" [(ngModel)]="filtres.au" /></label>
+    <button type="button" (click)="rechercher()">Rechercher</button>
+    <button type="button" class="bouton-lien" (click)="reinitialiser()">Reinitialiser</button>
+  </div>
+
+  @if (messageErreur()) {
+    <p class="message-erreur">{{ messageErreur() }}</p>
+  }
+
+  @if (enChargement()) {
+    <p>Chargement...</p>
+  } @else if (entrees().length === 0) {
+    <p>Aucune entree ne correspond a ces criteres.</p>
+  } @else {
+    <p class="compteur">{{ totalElements() }} entree(s)</p>
+    <table class="tableau">
+      <thead>
+        <tr>
+          <th>Date et heure</th>
+          <th>Utilisateur</th>
+          <th>Action</th>
+          <th>Details</th>
+          <th>Adresse IP</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (entree of entrees(); track entree.id) {
+          <tr>
+            <td>{{ entree.dateHeure | date: 'dd/MM/yyyy HH:mm:ss' }}</td>
+            <td>{{ entree.utilisateurLogin ?? '-' }}</td>
+            <td><span class="badge-action">{{ entree.action }}</span></td>
+            <td class="details">{{ entree.details ?? '' }}</td>
+            <td>{{ entree.adresseIp ?? '-' }}</td>
+          </tr>
+        }
+      </tbody>
+    </table>
+
+    <div class="pagination">
+      <button type="button" class="bouton-secondaire" [disabled]="page() === 0" (click)="charger(page() - 1)">Precedent</button>
+      <span>Page {{ page() + 1 }} / {{ totalPages() }}</span>
+      <button type="button" class="bouton-secondaire" [disabled]="page() + 1 >= totalPages()" (click)="charger(page() + 1)">Suivant</button>
+    </div>
+  }
+</app-shell>
+}

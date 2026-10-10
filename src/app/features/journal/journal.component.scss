@@ -1,0 +1,71 @@
+/* Habillage partage (page, tableau, boutons) defini dans styles.scss */
+
+.barre-filtres {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+  margin-bottom: 16px;
+
+  input, select {
+    border: 1px solid #e3e7ee;
+    border-radius: 8px;
+    padding: 8px 12px;
+    font-size: 0.85rem;
+  }
+
+  button {
+    border-radius: 8px;
+    padding: 8px 16px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    border: 1px solid #e3e7ee;
+    background: #16233f;
+    color: #fff;
+  }
+
+  .bouton-lien {
+    background: transparent;
+    color: #1f7a8c;
+    border: none;
+  }
+}
+
+.champ-date {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.82rem;
+  color: #6b7280;
+}
+
+.compteur {
+  margin: 0 0 8px;
+  font-size: 0.82rem;
+  color: #6b7280;
+}
+
+.badge-action {
+  font-family: ui-monospace, monospace;
+  font-size: 0.78rem;
+  background: #eef2f7;
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+.details {
+  max-width: 360px;
+  white-space: normal;
+  word-break: break-word;
+  font-size: 0.82rem;
+}
+
+.pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  margin-top: 16px;
+  font-size: 0.85rem;
+}

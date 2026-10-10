@@ -211,5 +211,10 @@ export const routes: Routes = [
     loadComponent: () =>
       import('./features/cellule/mouvement-form/mouvement-form.component').then((m) => m.MouvementFormComponent)
   },
+  {
+    path: 'journal',
+    canActivate: [authGuard],
+    loadComponent: () => import('./features/journal/journal.component').then((m) => m.JournalComponent)
+  },
   { path: '**', redirectTo: 'tableau-de-bord' }
 ];
