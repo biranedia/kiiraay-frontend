@@ -95,6 +95,9 @@
               }
             </td>
             <td class="actions">
+              @if (membre.identifiantUnique) {
+                <button type="button" class="bouton-lien" (click)="afficherQrCode(membre)">QR code</button>
+              }
               @if (peutModifier(membre)) {
                 <a [routerLink]="['/membre/membres', membre.id, 'modifier']">Modifier</a>
               }

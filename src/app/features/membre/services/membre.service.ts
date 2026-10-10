@@ -109,4 +109,10 @@ export class MembreService {
   recupererPhotoProfil(id: number): Observable<Blob> {
     return this.http.get(`${this.baseUrl}/${id}/photo-profil`, { responseType: 'blob' });
   }
+
+  // QR code encodant l'identifiant unique du membre (usage terrain : scan pour retrouver
+  // rapidement sa fiche).
+  genererQrCode(id: number): Observable<Blob> {
+    return this.http.get(`${this.baseUrl}/${id}/qrcode`, { responseType: 'blob' });
+  }
 }

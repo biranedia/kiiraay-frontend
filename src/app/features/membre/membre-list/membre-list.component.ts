@@ -164,6 +164,18 @@ export class MembreListComponent {
     this.resultatImport.set(null);
   }
 
+  // Ouvre le QR code du membre dans un nouvel onglet (impression/scan facile depuis la
+  // plupart des navigateurs) plutot que de forcer un telechargement.
+  afficherQrCode(membre: Membre): void {
+    this.membreService.genererQrCode(membre.id).subscribe({
+      next: (blob) => {
+        const url = window.URL.createObjectURL(blob);
+        window.open(url, '_blank');
+      },
+      error: () => this.messageErreur.set('Impossible de generer le QR code de ce membre.')
+    });
+  }
+
   // Droit general de creation/modification/suppression des fiches membre
   peutGerer(): boolean {
     return this.authService.possede('MEMBRE_ECRIRE');
