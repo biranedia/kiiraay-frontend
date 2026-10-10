@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from '../../../../environments/environment';
-import { ModifierRolesRequest, UtilisateurResponse } from '../../../core/models/auth.model';
+import { ModifierPerimetreRequest, ModifierRolesRequest, UtilisateurResponse } from '../../../core/models/auth.model';
 
 // Gestion des comptes APRES leur creation (la creation elle-meme reste dans AuthService,
 // via /api/auth/inscrire) : liste, roles, activation/desactivation. Tout est reserve a
@@ -18,6 +18,11 @@ export class UtilisateurService {
 
   modifierRoles(id: number, request: ModifierRolesRequest): Observable<UtilisateurResponse> {
     return this.http.put<UtilisateurResponse>(`${this.base}/${id}/roles`, request);
+  }
+
+  // Rattachement a des communes / cellules : determine les donnees visibles par l'utilisateur
+  modifierPerimetre(id: number, request: ModifierPerimetreRequest): Observable<UtilisateurResponse> {
+    return this.http.put<UtilisateurResponse>(`${this.base}/${id}/perimetre`, request);
   }
 
   desactiver(id: number): Observable<UtilisateurResponse> {

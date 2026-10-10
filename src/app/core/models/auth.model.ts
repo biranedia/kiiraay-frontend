@@ -36,6 +36,14 @@ export interface UtilisateurResponse {
   prenom: string;
   actif: boolean;
   roles: string[];
+  // Perimetre de donnees (ignore pour les roles a portee departementale)
+  communesAssigneesIds: number[];
+  cellulesAssigneesIds: number[];
+}
+
+export interface ModifierPerimetreRequest {
+  communesIds: number[];
+  cellulesIds: number[];
 }
 
 // Renvoye lors de la verification d'un lien d'activation, avant d'afficher le formulaire

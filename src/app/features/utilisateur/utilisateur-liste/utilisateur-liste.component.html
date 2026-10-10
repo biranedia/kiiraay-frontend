@@ -46,6 +46,44 @@
             }
           </div>
 
+          @if (aPorteeRestreinte(ligne)) {
+            <div class="bloc-perimetre">
+              <p class="titre-perimetre">Perimetre de donnees</p>
+              <p class="aide-perimetre">
+                Commune : acces a toutes ses cellules, comites et membres. Cellule : acces a cette cellule uniquement.
+              </p>
+              @if (ligne.communesCochees.size === 0 && ligne.cellulesCochees.size === 0) {
+                <p class="alerte-perimetre">Aucun rattachement : ce compte ne voit actuellement aucune donnee.</p>
+              }
+              <p class="sous-titre-perimetre">Communes / villes</p>
+              <div class="grille-roles">
+                @for (commune of communes(); track commune.id) {
+                  <label class="case-role">
+                    <input type="checkbox" [checked]="ligne.communesCochees.has(commune.id)"
+                           (change)="basculer(ligne.communesCochees, commune.id)" [disabled]="ligne.enCours" />
+                    {{ commune.nom }}
+                  </label>
+                }
+              </div>
+              <p class="sous-titre-perimetre">Cellules</p>
+              @if (cellules().length === 0) {
+                <p class="aide-perimetre">Aucune cellule enregistree.</p>
+              }
+              <div class="grille-roles">
+                @for (cellule of cellules(); track cellule.id) {
+                  <label class="case-role">
+                    <input type="checkbox" [checked]="ligne.cellulesCochees.has(cellule.id)"
+                           (change)="basculer(ligne.cellulesCochees, cellule.id)" [disabled]="ligne.enCours" />
+                    {{ cellule.code }} - {{ cellule.nom }}
+                  </label>
+                }
+              </div>
+              <button type="button" class="bouton-secondaire" [disabled]="ligne.enCours" (click)="enregistrerPerimetre(ligne)">
+                Enregistrer le perimetre
+              </button>
+            </div>
+          }
+
           <div class="actions-ligne">
             <button type="button" class="bouton-secondaire" [disabled]="ligne.enCours" (click)="enregistrerRoles(ligne)">
               Enregistrer les roles
