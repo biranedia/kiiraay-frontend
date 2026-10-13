@@ -12,6 +12,18 @@ function dateDuJourAuFormatInput(): string {
   return new Date().toISOString().slice(0, 10);
 }
 
+// Date de naissance : strictement avant aujourd'hui (le backend exige @Past)
+function hierAuFormatInput(): string {
+  return new Date(Date.now() - 86400000).toISOString().slice(0, 10);
+}
+
+const datePassee: ValidatorFn = (champ: AbstractControl): ValidationErrors | null => {
+  if (!champ.value) {
+    return null;
+  }
+  return champ.value > hierAuFormatInput() ? { dateFuture: true } : null;
+};
+
 // Coherence entre les deux dates de la CNI : l'expiration doit toujours suivre la delivrance.
 // Sans ce controle, une fiche pouvait etre enregistree avec une expiration anterieure a la
 // delivrance (ex. delivree en 2029, expiree en 2026).
@@ -58,6 +70,7 @@ export class MembreFormComponent implements OnDestroy {
 
   // Borne "max" des champs date (naissance, delivrance CNI) : interdit toute date future.
   readonly dateMaximale = dateDuJourAuFormatInput();
+  readonly dateNaissanceMaximale = hierAuFormatInput();
 
   // Preuve visuelle de la CNI : sans les deux photos, le membre ne peut pas etre valide
   // (voir MembreService.valider() cote backend). La carte d'electeur ne necessite pas de
@@ -89,7 +102,7 @@ export class MembreFormComponent implements OnDestroy {
   readonly formulaire = this.fb.nonNullable.group({
     nom: ['', [Validators.required, Validators.minLength(2)]],
     prenom: ['', [Validators.required, Validators.minLength(2)]],
-    dateNaissance: ['', [Validators.required, dateNonFuture]],
+    dateNaissance: ['', [Validators.required, datePassee]],
     lieuNaissance: [''],
     sexe: ['M' as 'M' | 'F', Validators.required],
     telephone: [''],

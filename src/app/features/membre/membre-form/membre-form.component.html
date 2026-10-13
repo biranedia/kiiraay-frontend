@@ -21,9 +21,9 @@
     <input id="prenom" type="text" formControlName="prenom" />
 
     <label for="dateNaissance">Date de naissance</label>
-    <input id="dateNaissance" type="date" formControlName="dateNaissance" [attr.max]="dateMaximale" />
+    <input id="dateNaissance" type="date" formControlName="dateNaissance" [attr.max]="dateNaissanceMaximale" />
     @if (formulaire.controls.dateNaissance.touched && formulaire.controls.dateNaissance.hasError('dateFuture')) {
-      <p class="erreur-champ">La date de naissance ne peut pas etre dans le futur.</p>
+      <p class="erreur-champ">La date de naissance doit etre anterieure a aujourd'hui.</p>
     }
 
     <label for="lieuNaissance">Lieu de naissance</label>
