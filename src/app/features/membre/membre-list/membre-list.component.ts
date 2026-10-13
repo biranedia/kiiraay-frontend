@@ -7,6 +7,7 @@ import { DatePipe } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { ImportMembresResponse, Membre, MembreCritereRecherche, StatutMembre } from '../../../core/models/membre.model';
 import { MembreService } from '../services/membre.service';
+import { CarteMembreService } from '../services/carte-membre.service';
 import { AuthService } from '../../../core/services/auth.service';
 
 import { AppShellComponent } from '../../../core/layout/app-shell/app-shell.component';
@@ -19,6 +20,7 @@ import { AppShellComponent } from '../../../core/layout/app-shell/app-shell.comp
 })
 export class MembreListComponent {
   private readonly membreService = inject(MembreService);
+  private readonly carteMembreService = inject(CarteMembreService);
   private readonly confirmation = inject(ConfirmationService);
   private readonly authService = inject(AuthService);
 
@@ -177,6 +179,18 @@ export class MembreListComponent {
 
   // Ouvre le QR code du membre dans un nouvel onglet (impression/scan facile depuis la
   // plupart des navigateurs) plutot que de forcer un telechargement.
+  // Carte de membre PDF (recto + verso, format carte bancaire)
+  async telechargerCarte(membre: Membre): Promise<void> {
+    this.enAction.set(membre.id);
+    try {
+      await this.carteMembreService.generer(membre);
+    } catch {
+      this.messageErreur.set('Impossible de generer la carte de ce membre.');
+    } finally {
+      this.enAction.set(null);
+    }
+  }
+
   afficherQrCode(membre: Membre): void {
     this.membreService.genererQrCode(membre.id).subscribe({
       next: (blob) => {
