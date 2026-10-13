@@ -17,9 +17,15 @@ export class CarteMembreService {
   private static readonly ROUGE: [number, number, number] = [190, 30, 45];
 
   async generer(membre: Membre): Promise<void> {
-    const [{ jsPDF }, embleme, qr, photo] = await Promise.all([
+    // La carte atteste l'appartenance : reservee aux membres valides (actifs)
+    if (membre.statut !== 'VALIDE') {
+      throw new Error('La carte de membre est reservee aux membres valides.');
+    }
+    const [{ jsPDF }, embleme, fond, qr, photo] = await Promise.all([
       import('jspdf'),
       this.chargerImage('assets/images/emblem-kiiraay.png'),
+      // Photo officielle deja eclaircie (assets/images/carte-fond.jpg) : le texte reste lisible
+      this.chargerImage('assets/images/carte-fond.jpg'),
       this.blobVersDataUrl(await firstValueFrom(this.membreService.genererQrCode(membre.id))),
       membre.photoProfilPresente
         ? firstValueFrom(this.membreService.recupererPhotoProfil(membre.id))
@@ -33,6 +39,7 @@ export class CarteMembreService {
     const doc = new jsPDF({ orientation: 'landscape', unit: 'mm', format: [L, H] });
 
     // ---------- RECTO ----------
+    doc.addImage(fond, 'JPEG', 0, 0, L, H);
     this.bandeau(doc, L);
     doc.addImage(embleme, 'PNG', 3, 1.6, 9, 6.9);
     doc.setTextColor(255, 255, 255);
