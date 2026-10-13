@@ -2,6 +2,7 @@ import { Component, Input, OnInit, inject, signal } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { NotificationService } from '../../services/notification.service';
+import { InstallationPwaService } from '../../services/installation-pwa.service';
 import { NotificationAlerte } from '../../models/notification.model';
 
 interface LienNav {
@@ -81,6 +82,7 @@ const SECTIONS: SectionNav[] = [
 })
 export class AppShellComponent implements OnInit {
   private readonly authService = inject(AuthService);
+  protected readonly installation = inject(InstallationPwaService);
   private readonly notificationService = inject(NotificationService);
 
   @Input() titre = '';

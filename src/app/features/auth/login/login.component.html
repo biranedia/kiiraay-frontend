@@ -48,7 +48,17 @@
       <button type="submit" [disabled]="enCours()">
         {{ enCours() ? 'Connexion...' : 'Se connecter' }}
       </button>
+      @if (enCours() && lent()) {
+        <p class="info-reveil">Le serveur se reveille apres une periode d'inactivite, cela peut prendre jusqu'a une minute...</p>
+      }
       <a class="lien-oubli" routerLink="/mot-de-passe-oublie">Mot de passe oublie ?</a>
+
+      @if (installation.boutonVisible) {
+        <button type="button" class="bouton-installer" (click)="installation.installer()">Installer l'application</button>
+        @if (installation.aideIosVisible()) {
+          <p class="aide-ios">Sur iPhone : touchez <strong>Partager</strong> (carre avec une fleche) puis <strong>Sur l'ecran d'accueil</strong>.</p>
+        }
+      }
     </form>
   </div>
 </div>

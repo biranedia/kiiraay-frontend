@@ -26,6 +26,12 @@
       @if (utilisateurConnecte) {
         <p class="utilisateur-courant">{{ utilisateurConnecte.login }}</p>
       }
+      @if (installation.boutonVisible) {
+        <button type="button" class="bouton-installer" (click)="installation.installer()">Installer l'application</button>
+        @if (installation.aideIosVisible()) {
+          <p class="aide-ios">Touchez <strong>Partager</strong> puis <strong>Sur l'ecran d'accueil</strong>.</p>
+        }
+      }
       <button type="button" class="bouton-deconnexion" (click)="deconnecter()">Se deconnecter</button>
     </div>
   </aside>

@@ -3,7 +3,7 @@ import { inject } from '@angular/core';
 import { catchError, switchMap, throwError } from 'rxjs';
 import { AuthService } from '../services/auth.service';
 
-const URLS_SANS_TOKEN = ['/auth/login', '/auth/refresh'];
+const URLS_SANS_TOKEN = ['/auth/login', '/auth/refresh', '/sante'];
 
 // Intercepteur fonctionnel (style Angular moderne, pas de classe/module a declarer) :
 // 1. ajoute automatiquement le Bearer token sur chaque requete vers l'API
