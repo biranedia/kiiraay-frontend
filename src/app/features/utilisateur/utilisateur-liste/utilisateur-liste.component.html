@@ -109,6 +109,11 @@
                 Reactiver
               </button>
             }
+            @if (!estSoiMeme(ligne)) {
+              <button type="button" class="bouton-supprimer" [disabled]="ligne.enCours" (click)="supprimer(ligne)">
+                Supprimer
+              </button>
+            }
           </div>
         </div>
       }

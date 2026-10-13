@@ -4,6 +4,7 @@ import { RouterLink } from '@angular/router';
 import { UtilisateurResponse } from '../../../core/models/auth.model';
 import { UtilisateurService } from '../services/utilisateur.service';
 import { AuthService } from '../../../core/services/auth.service';
+import { ConfirmationService } from '../../../core/services/confirmation.service';
 import { forkJoin } from 'rxjs';
 import { CommuneVilleService } from '../../territorial/commune-ville/services/commune-ville.service';
 import { CelluleService } from '../../cellule/services/cellule.service';
@@ -46,6 +47,7 @@ interface LigneUtilisateur {
 })
 export class UtilisateurListeComponent {
   private readonly utilisateurService = inject(UtilisateurService);
+  private readonly confirmation = inject(ConfirmationService);
   private readonly communeVilleService = inject(CommuneVilleService);
   private readonly celluleService = inject(CelluleService);
   protected readonly authService = inject(AuthService);
@@ -155,6 +157,30 @@ export class UtilisateurListeComponent {
       error: (err) => {
         ligne.enCours = false;
         ligne.message = err?.error?.message ?? 'Echec du changement de statut.';
+        this.rafraichir();
+      }
+    });
+  }
+
+  // Suppression definitive : confirmation explicite, puis retrait de la ligne de la liste
+  async supprimer(ligne: LigneUtilisateur): Promise<void> {
+    const u = ligne.utilisateur;
+    const ok = await this.confirmation.demander(
+      `Supprimer definitivement le compte "${u.login}" (${u.prenom} ${u.nom}) ? Cette action est irreversible. ` +
+        `Pour seulement bloquer l'acces, utilisez plutot "Desactiver".`,
+      'Supprimer',
+      true
+    );
+    if (!ok) {
+      return;
+    }
+    ligne.enCours = true;
+    ligne.message = null;
+    this.utilisateurService.supprimer(u.id).subscribe({
+      next: () => this.lignes.update((lignes) => lignes.filter((l) => l !== ligne)),
+      error: (err) => {
+        ligne.enCours = false;
+        ligne.message = err?.error?.message ?? 'Echec de la suppression du compte.';
         this.rafraichir();
       }
     });

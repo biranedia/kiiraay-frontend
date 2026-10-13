@@ -33,6 +33,11 @@ export class UtilisateurService {
     return this.http.post<UtilisateurResponse>(`${this.base}/${id}/reactiver`, {});
   }
 
+  // Suppression definitive du compte (irreversible)
+  supprimer(id: number): Observable<void> {
+    return this.http.delete<void>(`${this.base}/${id}`);
+  }
+
   renvoyerActivation(id: number): Observable<void> {
     return this.http.post<void>(`${this.base}/${id}/renvoyer-activation`, {});
   }
