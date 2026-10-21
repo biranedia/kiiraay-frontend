@@ -47,6 +47,12 @@ export class ChangerMotDePasseComponent {
   soumettre(): void {
     if (this.formulaire.invalid) {
       this.formulaire.markAllAsTouched();
+      // Message explicite au lieu d'un bouton qui semble ne rien faire
+      const nouveau = this.formulaire.controls.nouveauMotDePasse;
+      this.messageErreur.set(
+        nouveau.hasError('minlength') ? `Le nouveau mot de passe doit faire au moins 10 caracteres (actuellement ${nouveau.value.length}).`
+          : 'Veuillez remplir les trois champs.'
+      );
       return;
     }
 

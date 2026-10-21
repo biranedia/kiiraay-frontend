@@ -71,6 +71,14 @@ export class ActivationComponent implements OnInit {
   soumettre(): void {
     if (this.formulaire.invalid || !this.token) {
       this.formulaire.markAllAsTouched();
+      // Toujours expliquer pourquoi le bouton ne fait rien (avant : aucun message affiche)
+      const mdp = this.formulaire.controls.motDePasse;
+      this.messageErreur.set(
+        mdp.hasError('minlength') ? `Le mot de passe doit faire au moins 10 caracteres (actuellement ${mdp.value.length}).`
+          : mdp.hasError('required') ? 'Veuillez choisir un mot de passe.'
+          : !this.token ? "Lien d'activation incomplet : ouvrez le lien recu par email."
+          : 'Veuillez confirmer le mot de passe.'
+      );
       return;
     }
 
